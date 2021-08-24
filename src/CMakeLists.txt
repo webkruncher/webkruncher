@@ -4,24 +4,16 @@ project("webkruncher")
 
 #find_library(infokruncher REQUIRED )
 
-#IF(DEFINED ENV{LINUX})
-#	message( THIS IS LINUX )
-#ENDIF()
-#
-#
-#IF(DEFINED ENV{LINUX})
-#	message( THIS IS LINUX )
-#ENDIF()
-#
-
 message( SYSTEM: ${CMAKE_SYSTEM_NAME} ) 
 
 IF(CMAKE_SYSTEM_NAME STREQUAL OpenBSD)
-	message( THIS IS UNIX )
+	message( "THIS IS UNIX" )
+	add_definitions( -DUNIX )
 ENDIF()
 
 IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
-	message( THIS IS LINUX )
+	message( "THIS IS Linux" )
+	add_definitions( -DLINUX )
 ENDIF()
 
 
