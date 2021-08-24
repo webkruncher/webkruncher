@@ -4,13 +4,25 @@ project("webkruncher")
 
 #find_library(infokruncher REQUIRED )
 
-IF(LINUX)
-	message( THIS IS LINUX )
-ENDIF(LINUX)
+#IF(DEFINED ENV{LINUX})
+#	message( THIS IS LINUX )
+#ENDIF()
+#
+#
+#IF(DEFINED ENV{LINUX})
+#	message( THIS IS LINUX )
+#ENDIF()
+#
 
-IF(UNIX)
+message( SYSTEM: ${CMAKE_SYSTEM_NAME} ) 
+
+IF(CMAKE_SYSTEM_NAME STREQUAL OpenBSD)
 	message( THIS IS UNIX )
-ENDIF(UNIX)
+ENDIF()
+
+IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
+	message( THIS IS LINUX )
+ENDIF()
 
 
 add_subdirectory( site )
