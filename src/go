@@ -1,3 +1,10 @@
+
+OStag=`uname -a | cut -d ' ' -f1`
+[ ${OStag} == "Linux" ] && export OS=LINUX
+[ ${OStag} == "OpenBSD" ] && export OS=UNIX
+
+echo "OS:${OS}"
+
 echo -ne "\033[32mBuilding ContractKruncher\033[0m\n"
 mkdir -p ../src.build
 cmake  -S . -B ../src.build/  
