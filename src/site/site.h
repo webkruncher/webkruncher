@@ -46,16 +46,9 @@ namespace InfoKruncher
 	{
 		virtual operator bool ()
 		{
-			cout << "Setting up options" << endl;
 			{
 				ServiceOptions o;
-				o.port=81;
-				o.protocol=ServiceOptions::Protocol::http;
-				push_back( o );
-			}
-			{
-				ServiceOptions o;
-				o.port=82;
+				o.port=80;
 				o.protocol=ServiceOptions::Protocol::http;
 				push_back( o );
 			}

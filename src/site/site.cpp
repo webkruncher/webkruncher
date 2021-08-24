@@ -60,7 +60,7 @@ namespace InfoKruncher
 		const int status( 200 );
 
 		const string ExistingCookie( request.sValue( "Cookie" ) );
-		{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
+		//{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
 		const string CookieName("webkruncher.com.wip");
 
 		string NewCookie;
@@ -77,7 +77,7 @@ namespace InfoKruncher
 			{
 				NewCookie=result;
 				free( result );
-				{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
+				//{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
 			} else {
 				Log("Cannot create uuid");
 			}
@@ -109,7 +109,7 @@ namespace InfoKruncher
 		const string resource( requestparts[ 1 ] );
 
 		const string uri( ( ( method == "GET" ) && ( resource == "/" ) ) ? "index.html" : string(".") + resource );
-		{stringstream ss; ss << fence << "Request" << fence << method << fence << resource << fence << uri << fence; Log( ss.str() ); }
+		//{stringstream ss; ss << fence << "Request" << fence << method << fence << resource << fence << uri << fence; Log( ss.str() ); }
 
 		GetPage< SocketType >( request, uri, headers, sock );
 	}
