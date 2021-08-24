@@ -46,22 +46,20 @@ using namespace Hyper;
 
 namespace InfoKruncher
 {
-	template <class SocketType>
-		void ResponseBase::Serve( SocketType& sock, Hyper::Request< SocketType >& request )
+
+	template < class SocketType >
+		void Site::GetPage( const Hyper::Request<SocketType>& request, const string& uri, const KruncherTools::stringvector& headers, SocketType& sock )
 	{
 		sock.flush();
 
 		stringstream ss;
-		string srequest(request.c_str());
 
-		string file( tbd );
-		const string contenttype(Hyper::ContentType(srequest));
+		const string contenttype(Hyper::ContentType(uri));
 
-		cout << "Loading " << file << endl;
-		LoadFile(file.c_str(), ss);
-		status=200;
+		LoadFile(uri.c_str(), ss);
+		const int status( 200 );
 
-		string ExistingCookie( request.sValue( "Cookie" ) );
+		const string ExistingCookie( request.sValue( "Cookie" ) );
 		{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
 		const string CookieName("webkruncher.com.wip");
 
@@ -101,41 +99,19 @@ namespace InfoKruncher
 	}
 
 	template < class SocketType >
-		void ResponseHome< SocketType >::operator ()()
+		void Site::ServePage( string& requestline, KruncherTools::stringvector& headers, SocketType& sock )
 	{
-		SocketType& sock(request);
-		Serve( sock, request );
-	}
+		const Hyper::Request< SocketType > request( requestline, headers, sock );
+		stringvector requestparts;
+		requestparts.split( requestline, " " );
+		if ( requestparts.size() < 3 ) return;
+		const string method( requestparts[ 0 ] );
+		const string resource( requestparts[ 1 ] );
 
+		const string uri( ( ( method == "GET" ) && ( resource == "/" ) ) ? "index.html" : string(".") + resource );
+		{stringstream ss; ss << fence << "Request" << fence << method << fence << resource << fence << uri << fence; Log( ss.str() ); }
 
-	template < class SocketType >
-		RequestManager< SocketType >::operator Hyper::Response< SocketType >& ()
-	{
-		const string& Req( HyperBase< SocketType >::request );
-		unique_ptr<Response<SocketType> >& Respond( Hyper::Request< SocketType >:: response );
-		if (  Respond.get() ) return *Respond.get(); 
-		const string tbd("index.html");
-
-		ifBinary(tbd);
-		if (  Respond.get() ) return *Respond.get(); 
-		if ( Req.find("GET / ")==0) if ( ! Respond.get() ) Respond=unique_ptr<Response< SocketType > >( new ResponseHome< SocketType >(*this, tbd, status) );
-		if ( Respond.get() ) { return *Respond.get(); }
-		if ( ! Respond.get() ) throw string( "Can't get response" );
-		return *Respond.get(); 
-	}
-
-
-	template < class SocketType >
-		void Site::ServePage( string& requestline, KruncherTools::stringvector& headers, SocketType& ss )
-	{
-		RequestManager< SocketType > request(requestline, headers, ss );
-		if (!request.resolve()) 
-		{
-			ss.close();
-			return ;
-		}
-		Response< SocketType >& rq(request);
-		rq();
+		GetPage< SocketType >( request, uri, headers, sock );
 	}
 
 	template<> void Service< Site >::ForkAndServe( const ServiceOptions& svcoptions )
@@ -166,6 +142,10 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
+		chdir( "/home/jmt/websites/text/webkruncher" );
+
+
+
 		Initialize();
 		InfoKruncher::Options options( argc, argv );
 		if ( ! options ) throw "Invalid options";

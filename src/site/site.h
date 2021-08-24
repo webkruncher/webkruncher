@@ -86,6 +86,10 @@ namespace InfoKruncher
 		void ForkAndServe( const ServiceOptions& );
 		void Terminate();
 		void Throttle( const ServiceOptions& );
+
+		template< class SocketType >
+			void GetPage( const Hyper::Request< SocketType >& , const string&, const KruncherTools::stringvector&, SocketType& );
+
 		template< class SocketType >
 			void ServePage( string& , KruncherTools::stringvector& , SocketType& );
 
