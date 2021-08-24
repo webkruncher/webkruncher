@@ -13,8 +13,7 @@ add_executable(
 target_include_directories(
     webkruncher
 	    PRIVATE
-		/usr/local/include/infokruncher/
-		/usr/include/uuid/
+		${INCLUDE_PATHS}
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
