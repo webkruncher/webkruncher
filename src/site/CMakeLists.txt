@@ -22,15 +22,13 @@ target_include_directories(
 target_link_directories(
 	webkruncher
 		PUBLIC
-			/usr/local/lib/infokruncher/
+			${LIBRARY_PATHS}
 )
 
 target_link_libraries(
     webkruncher
 	    PUBLIC
-		ssl	
-		crypto	
-		informationkruncher
+			${LIBRARIES}
 )
 
 install(

@@ -9,6 +9,17 @@ message( SYSTEM: ${CMAKE_SYSTEM_NAME} )
 IF(CMAKE_SYSTEM_NAME STREQUAL OpenBSD)
 	message( "THIS IS UNIX" )
 	add_definitions( -DUNIX )
+	set(
+		LIBRARY_PATHS
+			/usr/local/lib/infokruncher/
+	)
+	set(
+		LIBRARIES
+			uuid
+			ssl	
+			crypto	
+			informationkruncher
+	)
 ENDIF()
 
 IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
