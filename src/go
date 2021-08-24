@@ -9,3 +9,4 @@ cmake  -S . -B ../src.build/
 cmake  --build ../src.build/ 
 
 [ "${1}" == "install" ] &&  cmake --install ../src.build
+
