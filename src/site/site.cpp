@@ -41,11 +41,32 @@ using namespace KruncherTools;
 
 volatile bool TERMINATE(false);
 using namespace KruncherTools;
-#include <uuid.h>
+#include <uuid/uuid.h>
 using namespace Hyper;
 
 namespace InfoKruncher
 {
+#ifdef UNIX
+	inline string GetUuid()
+	{
+		uuid_t  UuId;
+		unsigned int uuidstatus( 0 );
+		uuid_create(&UuId, &uuidstatus); 
+		char* result( NULL );	
+		uuid_to_string(&UuId, &result, &uuidstatus);
+		const string uuid( (char*) result );
+		free( result );
+		return uuid;
+	}
+#else
+	inline string GetUuid()
+	{
+		unsigned char result[ 512 ];
+		uuid_generate(result);
+		const string uuid( (char*) result );
+		return uuid;
+	}
+#endif
 
 	template < class SocketType >
 		void Site::GetPage( const Hyper::Request<SocketType>& request, const string& uri, const KruncherTools::stringvector& headers, SocketType& sock )
@@ -67,20 +88,8 @@ namespace InfoKruncher
 
 		if ( ExistingCookie.empty() )
 		{
-			uuid_t  UuId;
-			unsigned int uuidstatus( 0 );
-			uuid_create(&UuId, &uuidstatus);
-
-			char* result( NULL );	
-			uuid_to_string(&UuId, &result, &uuidstatus);
-			if ( result ) 
-			{
-				NewCookie=result;
-				free( result );
-				//{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
-			} else {
-				Log("Cannot create uuid");
-			}
+			NewCookie=GetUuid();
+			{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
 		}
 
 

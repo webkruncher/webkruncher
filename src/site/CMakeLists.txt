@@ -14,6 +14,7 @@ target_include_directories(
     webkruncher
 	    PRIVATE
 		/usr/local/include/infokruncher/
+		/usr/include/uuid/
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )
