@@ -4,4 +4,13 @@ project("webkruncher")
 
 #find_library(infokruncher REQUIRED )
 
+IF(LINUX)
+	message( THIS IS LINUX )
+ENDIF(LINUX)
+
+IF(UNIX)
+	message( THIS IS UNIX )
+ENDIF(UNIX)
+
+
 add_subdirectory( site )

@@ -32,10 +32,10 @@
 #include <site.h>
 
 using namespace std;
-using namespace KruncherTools;
 
 #include <infossock.h>
 #include <infosock.h>
+#include <infotools.h>
 
 #include <process.h>
 
