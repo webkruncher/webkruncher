@@ -6,6 +6,7 @@ get_filename_component(INCLUDES_PATH ../include/ REALPATH)
 add_executable(
 	webkruncher
 		main.cpp
+		webkruncher.cpp
 )
 
 #add_library( kruncher::webkruncher  ALIAS webkruncher  )

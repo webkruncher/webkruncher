@@ -10,6 +10,7 @@ set(
 	NIX_INCLUDE_PATHS
 		/usr/local/include/infokruncher/
 		/usr/include/uuid/
+		../include
 )
 
 set(
@@ -61,6 +62,7 @@ IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
 ENDIF()
 
 
+add_subdirectory( include )
 add_subdirectory( site )
 
 
