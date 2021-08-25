@@ -30,7 +30,7 @@
 #include <webkruncher.h>
 
 
-	string TestSite::LoadResponse( const string& uri, const stringvector& headers )
+	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers )
 	{
 		int status( 401 );
 

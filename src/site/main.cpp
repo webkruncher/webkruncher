@@ -31,14 +31,14 @@
 #include <webkruncher.h>
 
 
-template<> void InfoKruncher::Service< TestSite >::ForkAndServe( const ServiceOptions& svcoptions )
+template<> void InfoKruncher::Service< WebKruncher >::ForkAndServe( const ServiceOptions& svcoptions )
 {
 	if ( svcoptions.protocol == ServiceOptions::Protocol::http )  RunService< PlainInformation::streamingsocket  >( svcoptions );
 	if ( svcoptions.protocol == ServiceOptions::Protocol::https ) RunService< SecureInformation::streamingsocket >( svcoptions );
 }
 
-struct Sites : vector< InfoKruncher::Service<TestSite> > { void Terminate(); };
-template<> void InfoKruncher::Service< TestSite >::Terminate() { subprocesses.Terminate(); }
+struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
+template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
 void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
@@ -59,9 +59,9 @@ int main( int argc, char** argv )
 		const ServiceList& servicelist( options.servicelist );
 		for ( ServiceList::const_iterator it=servicelist.begin(); it!=servicelist.end(); it++ )
 		{
-			InfoKruncher::Service<TestSite> info;
+			InfoKruncher::Service<WebKruncher> info;
 			sites.push_back( info );
-			InfoKruncher::Service<TestSite>& site( sites.back() );
+			InfoKruncher::Service<WebKruncher>& site( sites.back() );
 			const InfoKruncher::ServiceOptions& svcoptions( *it );
 			site.ForkAndServe( svcoptions);
 		}
