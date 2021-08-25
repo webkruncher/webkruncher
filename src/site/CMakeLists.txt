@@ -4,14 +4,14 @@ set(CMAKE_CXX_FLAGS " -std=c++11 -pthread " )
 get_filename_component(INCLUDES_PATH ../include/ REALPATH) 
 
 add_executable(
-	webkruncher
-		site.cpp
+	testsite
+		main.cpp
 )
 
-#add_library( kruncher::webkruncher  ALIAS webkruncher  )
+#add_library( kruncher::testsite  ALIAS testsite  )
 
 target_include_directories(
-    webkruncher
+    testsite
 	    PRIVATE
 		${INCLUDE_PATHS}
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
@@ -19,20 +19,20 @@ target_include_directories(
 )
 
 target_link_directories(
-	webkruncher
+	testsite
 		PUBLIC
 			${LIBRARY_PATHS}
 )
 
 target_link_libraries(
-    webkruncher
+    testsite
 	    PUBLIC
 			${LIBRARIES}
 )
 
 install(
     TARGETS
-	    webkruncher
+	    testsite
 		    EXPORT exports
 		    RUNTIME DESTINATION bin
 ) 
