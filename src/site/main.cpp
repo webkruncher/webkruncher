@@ -37,20 +37,9 @@ template<> void InfoKruncher::Service< TestSite >::ForkAndServe( const ServiceOp
 	if ( svcoptions.protocol == ServiceOptions::Protocol::https ) RunService< SecureInformation::streamingsocket >( svcoptions );
 }
 
-struct Sites : vector< InfoKruncher::Service<TestSite> > 
-{
-	void Terminate();
-};
-
-
-template<> void InfoKruncher::Service< TestSite >::Terminate() 
-	{ subprocesses.Terminate(); }
-
-void Sites::Terminate()
-{
-	for ( iterator it=begin(); it!=end(); it++ )
-		it->Terminate();
-}
+struct Sites : vector< InfoKruncher::Service<TestSite> > { void Terminate(); };
+template<> void InfoKruncher::Service< TestSite >::Terminate() { subprocesses.Terminate(); }
+void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
 int main( int argc, char** argv )

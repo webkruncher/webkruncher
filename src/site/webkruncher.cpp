@@ -32,7 +32,6 @@
 
 	string TestSite::LoadResponse( const string& uri, const stringvector& headers )
 	{
-
 		int status( 401 );
 
 		stringstream ss;
@@ -44,7 +43,7 @@
 
 		const string ExistingCookie( Hyper::mimevalue( headers, "cookie" ) );
 		{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
-		const string CookieName("webkruncher.com.wip");
+		const string CookieName("webkruncher.com.testsite");
 
 		string NewCookie;
 
