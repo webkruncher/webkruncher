@@ -123,20 +123,6 @@ namespace InfoKruncher
 		{}
 
 		operator Hyper::Response< SocketType >& ();
-
-		private:
-		Hyper::Response< SocketType >* ifBinary(const string tbd)
-		{
-			if (Hyper::Request< SocketType >::request.find("GET /")==0) 
-			{
-				//if (request.find(".ico ")!=string::npos) if ( ! response.get() ) response=unique_ptr<Response< SocketType > >(new Response_Binary(*this, tbd, status));
-				//if (request.find(".png ")!=string::npos) if ( ! response.get() ) response=unique_ptr<Response< SocketType > >(new Response_Binary(*this, tbd, status));
-				//if (request.find(".jpg ")!=string::npos) if ( ! response.get() ) response=unique_ptr<Response< SocketType > >(new Response_Binary(*this, tbd, status));
-				//if (request.find(".gif ")!=string::npos) if ( ! response.get() ) response=unique_ptr<Response< SocketType > >(new Response_Binary(*this, tbd, status));
-			}
-			return NULL;
-		}
-		int status;
 	};
 
 	struct Sites : vector< InfoKruncher::Service<InfoKruncher::Site> > 

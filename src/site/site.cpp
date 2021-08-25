@@ -49,6 +49,7 @@ namespace InfoKruncher
 	template < class SocketType >
 		void Site::GetPage( const Hyper::Request<SocketType>& request, const string& uri, const KruncherTools::stringvector& headers, SocketType& sock )
 	{
+		int status( 401 );
 		sock.flush();
 
 		stringstream ss;
@@ -56,10 +57,10 @@ namespace InfoKruncher
 		const string contenttype(Hyper::ContentType(uri));
 
 		LoadFile(uri.c_str(), ss);
-		const int status( 200 );
+		if ( ss.str().size() ) status=200;
 
-		const string ExistingCookie( request.sValue( "Cookie" ) );
-		//{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
+		const string ExistingCookie( request.sValue( "cookie" ) );
+		{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
 		const string CookieName("webkruncher.com.wip");
 
 		string NewCookie;
