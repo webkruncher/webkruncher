@@ -30,16 +30,17 @@
 #include <webkruncher.h>
 
 
-	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& o )
+	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& options )
 	{
-		const WebKruncherOptions& options( static_cast< const WebKruncherOptions& >( o ) );
 		int status( 401 );
 
 		stringstream ss;
 
 		const string contenttype(Hyper::ContentType(uri));
 
-		LoadFile(uri.c_str(), ss);
+		const string filename( options.path + uri );
+
+		LoadFile(filename.c_str(), ss);
 		if ( ss.str().size() ) status=200;
 
 		const string ExistingCookie( Hyper::mimevalue( headers, "cookie" ) );

@@ -29,19 +29,15 @@
 #ifndef WEBKRUNCHER_WEBSITE_H
 #define WEBKRUNCHER_WEBSITE_H
 
-	struct WebKruncherOptions : InfoKruncher::ServiceOptions
-	{
-		string path;
-	};
 
-	struct ServiceList : vector< WebKruncherOptions >
+	struct ServiceList : vector< InfoKruncher::ServiceOptions >
 	{
 		virtual operator bool ()
 		{
-			WebKruncherOptions o;
+			InfoKruncher::ServiceOptions o;
 			o.port=80;
 			o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
-			o.path="";
+			o.path="/home/jmt/websites/text/webkruncher/";
 			push_back( o );
 			return true;
 		}
