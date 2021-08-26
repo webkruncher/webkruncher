@@ -80,3 +80,7 @@
 		return s;
 	}
 
+	void WebKruncher::Throttle( const InfoKruncher::ServiceOptions& svcoptions )
+	{
+		usleep( (rand()%10)+20 );
+	}

@@ -37,6 +37,7 @@
 	struct WebKruncher : InfoKruncher::Site
 	{
 		virtual string LoadResponse( Responder& );
+		virtual void Throttle( const InfoKruncher::ServiceOptions& );
 	};
 
 #endif //WEBKRUNCHER_WEBSITE_H
