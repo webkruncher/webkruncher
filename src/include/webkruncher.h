@@ -29,7 +29,6 @@
 #ifndef WEBKRUNCHER_WEBSITE_H
 #define WEBKRUNCHER_WEBSITE_H
 
-
 	struct ServiceList : vector< InfoKruncher::ServiceOptions >
 	{
 		virtual operator bool ();
