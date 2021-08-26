@@ -29,13 +29,19 @@
 #ifndef WEBKRUNCHER_WEBSITE_H
 #define WEBKRUNCHER_WEBSITE_H
 
-	struct ServiceList : vector< InfoKruncher::ServiceOptions >
+	struct WebKruncherOptions : InfoKruncher::ServiceOptions
+	{
+		string path;
+	};
+
+	struct ServiceList : vector< WebKruncherOptions >
 	{
 		virtual operator bool ()
 		{
-			InfoKruncher::ServiceOptions o;
+			WebKruncherOptions o;
 			o.port=80;
 			o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
+			o.path="";
 			push_back( o );
 			return true;
 		}
@@ -43,7 +49,7 @@
 
 	struct WebKruncher : InfoKruncher::Site
 	{
-		virtual string LoadResponse( const string& uri, const stringvector& headers );
+		virtual string LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& );
 	};
 
 #endif //WEBKRUNCHER_WEBSITE_H

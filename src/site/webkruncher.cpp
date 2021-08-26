@@ -30,8 +30,9 @@
 #include <webkruncher.h>
 
 
-	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers )
+	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& o )
 	{
+		const WebKruncherOptions& options( static_cast< const WebKruncherOptions& >( o ) );
 		int status( 401 );
 
 		stringstream ss;
@@ -42,7 +43,6 @@
 		if ( ss.str().size() ) status=200;
 
 		const string ExistingCookie( Hyper::mimevalue( headers, "cookie" ) );
-		{stringstream ssl; ssl<<"ExistingCookie:" << ExistingCookie; Log( ssl.str() );}
 		const string CookieName("webkruncher.com.testsite");
 
 		string NewCookie;
