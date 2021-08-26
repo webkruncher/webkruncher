@@ -30,20 +30,30 @@
 #include <webkruncher.h>
 
 
-	string WebKruncher::LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& options )
+	ServiceList::operator bool ()
+	{
+		InfoKruncher::ServiceOptions o;
+		o.port=80;
+		o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
+		o.path="/home/jmt/websites/text/webkruncher/";
+		push_back( o );
+		return true;
+	}
+
+	string WebKruncher::LoadResponse( Responder& r  )
 	{
 		int status( 401 );
 
 		stringstream ss;
 
-		const string contenttype(Hyper::ContentType(uri));
+		const string contenttype(Hyper::ContentType( r.uri ));
 
-		const string filename( options.path + uri );
+		const string filename( r.options.path + r.uri );
 
 		LoadFile(filename.c_str(), ss);
 		if ( ss.str().size() ) status=200;
 
-		const string ExistingCookie( Hyper::mimevalue( headers, "cookie" ) );
+		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
 		const string CookieName("webkruncher.com.testsite");
 
 		string NewCookie;

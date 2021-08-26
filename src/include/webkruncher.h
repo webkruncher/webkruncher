@@ -32,20 +32,12 @@
 
 	struct ServiceList : vector< InfoKruncher::ServiceOptions >
 	{
-		virtual operator bool ()
-		{
-			InfoKruncher::ServiceOptions o;
-			o.port=80;
-			o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
-			o.path="/home/jmt/websites/text/webkruncher/";
-			push_back( o );
-			return true;
-		}
+		virtual operator bool ();
 	};
 
 	struct WebKruncher : InfoKruncher::Site
 	{
-		virtual string LoadResponse( const string& uri, const stringvector& headers, const InfoKruncher::ServiceOptions& );
+		virtual string LoadResponse( Responder& );
 	};
 
 #endif //WEBKRUNCHER_WEBSITE_H
