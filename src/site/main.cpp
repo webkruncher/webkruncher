@@ -47,8 +47,6 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		chdir( "/home/jmt/websites/text/webkruncher" );
-
 		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
 		if ( ! options ) throw "Invalid options";
