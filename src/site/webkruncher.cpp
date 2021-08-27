@@ -32,11 +32,20 @@
 
 	ServiceList::operator bool ()
 	{
-		InfoKruncher::ServiceOptions o;
-		o.port=80;
-		o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
-		o.path="/home/jmt/websites/text/webkruncher/";
-		push_back( o );
+		{
+			InfoKruncher::ServiceOptions o;
+			o.port=80;
+			o.protocol=InfoKruncher::ServiceOptions::Protocol::http;
+			o.path="/home/jmt/websites/text/webkruncher/";
+			push_back( o );
+		}
+		{
+			InfoKruncher::ServiceOptions o;
+			o.port=443;
+			o.protocol=InfoKruncher::ServiceOptions::Protocol::https;
+			o.path="/home/jmt/websites/text/webkruncher/";
+			push_back( o );
+		}
 		return true;
 	}
 

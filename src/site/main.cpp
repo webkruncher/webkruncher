@@ -33,8 +33,8 @@
 
 template<> void InfoKruncher::Service< WebKruncher >::ForkAndServe( const ServiceOptions& svcoptions )
 {
-	if ( svcoptions.protocol == ServiceOptions::Protocol::http )  RunService< PlainInformation::streamingsocket  >( svcoptions );
-	if ( svcoptions.protocol == ServiceOptions::Protocol::https ) RunService< SecureInformation::streamingsocket >( svcoptions );
+	if ( svcoptions.protocol == ServiceOptions::Protocol::http )  RunService< streamingsocket  >( svcoptions );
+	if ( svcoptions.protocol == ServiceOptions::Protocol::https ) RunService< streamingsocket >( svcoptions );
 }
 
 struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
