@@ -42,6 +42,7 @@ template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses
 void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
+
 int main( int argc, char** argv )
 {
 	stringstream ssexcept;

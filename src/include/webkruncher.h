@@ -31,7 +31,7 @@
 
 	struct ServiceList : vector< InfoKruncher::ServiceOptions >
 	{
-		virtual operator bool ();
+		virtual bool operator ()( const KruncherTools::Args& );
 	};
 
 	struct WebKruncher : InfoKruncher::Site

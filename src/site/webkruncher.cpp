@@ -30,7 +30,7 @@
 #include <webkruncher.h>
 
 
-	ServiceList::operator bool ()
+	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
 		{
 			InfoKruncher::ServiceOptions o;
@@ -39,11 +39,21 @@
 			o.path="/home/jmt/websites/text/webkruncher/";
 			push_back( o );
 		}
+
+		KruncherTools::Args::const_iterator usehttps( options.find( "--https" ) );
+		if ( usehttps != options.end() )
 		{
 			InfoKruncher::ServiceOptions o;
 			o.port=443;
 			o.protocol=InfoKruncher::ServiceOptions::Protocol::https;
 			o.path="/home/jmt/websites/text/webkruncher/";
+
+			cout << "Ssl Password: ";
+			o.keypasswd=KruncherTools::getpass();
+			o.cadir="/home/jmt/websites/certs/webkruncher/";
+			o.certfile=o.cadir+string("WEBKRUNCHER.COM.crt");
+			o.cafile=o.cadir+string("dv_chain.txt");
+			o.keyfile=o.cadir+string("server.key");
 			push_back( o );
 		}
 		return true;
