@@ -82,6 +82,7 @@
 
 		LoadFile(filename.c_str(), ss);
 		if ( ss.str().size() ) status=200;
+		Log( filename );
 
 		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
 		const string CookieName("webkruncher.com");
