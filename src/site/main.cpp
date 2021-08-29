@@ -48,6 +48,7 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
+		cout << yellow << "webkruncher is starting up" << normal << endl;
 		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
 		if ( ! options ) throw "Invalid options";
