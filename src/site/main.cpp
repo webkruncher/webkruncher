@@ -48,10 +48,11 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
 		if ( ! options ) throw "Invalid options";
-		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
+		KruncherTools::Daemonizer daemon( options.daemonize, "TestSite" );
+
+		Initialize();
 
 		Sites sites;
 
@@ -62,7 +63,7 @@ int main( int argc, char** argv )
 			sites.push_back( info );
 			InfoKruncher::Service<WebKruncher>& site( sites.back() );
 			const InfoKruncher::ServiceOptions& svcoptions( *it );
-			site.ForkAndServe( svcoptions);
+			site.ForkAndServe( svcoptions );
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
 		sites.Terminate();

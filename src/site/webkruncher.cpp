@@ -32,6 +32,8 @@
 
 	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
+
+		if ( true )
 		{
 			InfoKruncher::ServiceOptions o;
 			o.port=80;
@@ -43,17 +45,27 @@
 		KruncherTools::Args::const_iterator usehttps( options.find( "--https" ) );
 		if ( usehttps != options.end() )
 		{
+
+			SecureInformation::init_openssl();
 			InfoKruncher::ServiceOptions o;
 			o.port=443;
 			o.protocol=InfoKruncher::ServiceOptions::Protocol::https;
 			o.path="/home/jmt/websites/text/webkruncher/";
 
-			cout << "Ssl Password: ";
-			o.keypasswd=KruncherTools::getpass();
-			o.cadir="/home/jmt/websites/certs/webkruncher/";
-			o.certfile=o.cadir+string("WEBKRUNCHER.COM.crt");
-			o.cafile=o.cadir+string("dv_chain.txt");
-			o.keyfile=o.cadir+string("server.key");
+			const string passwordfile( "/etc/webkruncher.pwd" );
+			if ( KruncherTools::FileExists( passwordfile ) )
+			{
+				o.keypasswd=KruncherTools::LoadFile( passwordfile );
+			} else {
+				cout << "Ssl Password: ";
+				o.keypasswd=KruncherTools::getpass();
+			}
+
+			const string certs( "/home/jmt/websites/certs/webkruncher/" );
+			o.cadir=certs;
+			o.certfile=certs+string("WEBKRUNCHER.COM.crt");
+			o.cafile=certs+string("dv_chain.txt");
+			o.keyfile=certs+string("server.key");
 			push_back( o );
 		}
 		return true;
@@ -73,7 +85,7 @@
 		if ( ss.str().size() ) status=200;
 
 		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
-		const string CookieName("webkruncher.com.testsite");
+		const string CookieName("webkruncher.com");
 
 		string NewCookie;
 
