@@ -27,7 +27,10 @@ else
 	mkdir -p ../src.build
 	cmake  -S . -B ../src.build/  
 	cmake  --build ../src.build/ 
+	[ $? != 0 ] && exit -1
 
 	[ "${1}" == "install" ] &&  cmake --install ../src.build
 fi
+
+exit 0
 
