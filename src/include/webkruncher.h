@@ -29,7 +29,7 @@
 #ifndef WEBKRUNCHER_WEBSITE_H
 #define WEBKRUNCHER_WEBSITE_H
 
-	struct ServiceList : vector< InfoKruncher::ServiceOptions >
+	struct ServiceList : vector< InfoKruncher::SocketProcessOptions >
 	{
 		virtual bool operator ()( const KruncherTools::Args& );
 	};
@@ -37,7 +37,7 @@
 	struct WebKruncher : InfoKruncher::Site
 	{
 		virtual string LoadResponse( Responder& );
-		virtual void Throttle( const InfoKruncher::ServiceOptions& );
+		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
 	};
 
 #endif //WEBKRUNCHER_WEBSITE_H

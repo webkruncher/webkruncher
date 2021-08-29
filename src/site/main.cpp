@@ -31,10 +31,10 @@
 #include <webkruncher.h>
 
 
-template<> void InfoKruncher::Service< WebKruncher >::ForkAndServe( const ServiceOptions& svcoptions )
+template<> void InfoKruncher::Service< WebKruncher >::ForkAndServe( const SocketProcessOptions& svcoptions )
 {
-	if ( svcoptions.protocol == ServiceOptions::Protocol::http )  RunService< streamingsocket  >( svcoptions );
-	if ( svcoptions.protocol == ServiceOptions::Protocol::https ) RunService< streamingsocket >( svcoptions );
+	if ( svcoptions.protocol == SocketProcessOptions::Protocol::http )  RunService< streamingsocket  >( svcoptions );
+	if ( svcoptions.protocol == SocketProcessOptions::Protocol::https ) RunService< streamingsocket >( svcoptions );
 }
 
 struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
@@ -61,7 +61,7 @@ int main( int argc, char** argv )
 			InfoKruncher::Service<WebKruncher> info;
 			sites.push_back( info );
 			InfoKruncher::Service<WebKruncher>& site( sites.back() );
-			const InfoKruncher::ServiceOptions& svcoptions( *it );
+			const InfoKruncher::SocketProcessOptions& svcoptions( *it );
 			site.ForkAndServe( svcoptions);
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
