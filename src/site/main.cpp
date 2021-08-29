@@ -56,8 +56,8 @@ int main( int argc, char** argv )
 
 		Sites sites;
 
-		const ServiceList& servicelist( options.servicelist );
-		for ( ServiceList::const_iterator it=servicelist.begin(); it!=servicelist.end(); it++ )
+		const ServiceList& workerlist( options.workerlist );
+		for ( ServiceList::const_iterator it=workerlist.begin(); it!=workerlist.end(); it++ )
 		{
 			InfoKruncher::Service<WebKruncher> info;
 			sites.push_back( info );
