@@ -82,7 +82,13 @@
 
 		LoadFile(filename.c_str(), ss);
 		if ( ss.str().size() ) status=200;
-		Log( filename );
+
+		stringstream ssmsg;
+		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::https ) ssmsg << "https";
+		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::http )  ssmsg << "http";
+
+		ssmsg << fence << filename << fence;
+		Log( "WebKruncher::LoadResponse", ssmsg.str() );
 
 		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
 		const string CookieName("webkruncher.com");
