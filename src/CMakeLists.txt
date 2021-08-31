@@ -6,6 +6,8 @@ project("webkruncher")
 
 message( SYSTEM: ${CMAKE_SYSTEM_NAME} ) 
 
+add_compile_options(-ggdb)
+
 set(
 	NIX_INCLUDE_PATHS
 		/usr/local/include/infokruncher/
