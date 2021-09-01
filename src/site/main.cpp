@@ -66,6 +66,7 @@ int main( int argc, char** argv )
 			site.ForkAndServe( svcoptions);
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
+		Log( "webkruncher is exiting" );
 		sites.Terminate();
 	}
 	catch( const exception& e ) { ssexcept<<e.what(); }
