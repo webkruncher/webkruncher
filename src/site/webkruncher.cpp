@@ -32,8 +32,8 @@
 
 	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
-
-		if ( true )
+		KruncherTools::Args::const_iterator usehttp( options.find( "--http" ) );
+		if ( usehttp != options.end() )
 		{
 			InfoKruncher::SocketProcessOptions o;
 			o.port=80;
