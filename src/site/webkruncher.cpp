@@ -85,7 +85,7 @@
 		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::https ) ssmsg << "https";
 		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::http )  ssmsg << "http";
 
-		ssmsg << fence << filename << fence;
+		ssmsg << fence << filename; 
 		Log( "WebKruncher::LoadResponse", ssmsg.str() );
 
 		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
