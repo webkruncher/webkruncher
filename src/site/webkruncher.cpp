@@ -32,8 +32,7 @@
 
 	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
-		KruncherTools::Args::const_iterator usehttp( options.find( "--http" ) );
-		if ( usehttp != options.end() )
+		if ( options.find( "--http" ) != options.end() )
 		{
 			InfoKruncher::SocketProcessOptions o;
 			o.port=80;
@@ -42,8 +41,7 @@
 			push_back( o );
 		}
 
-		KruncherTools::Args::const_iterator usehttps( options.find( "--https" ) );
-		if ( usehttps != options.end() )
+		if ( options.find( "--https" ) != options.end() )
 		{
 			SecureInformation::init_openssl();
 			InfoKruncher::SocketProcessOptions o;
