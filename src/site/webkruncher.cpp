@@ -58,7 +58,7 @@
 				o.keypasswd=KruncherTools::getpass();
 			}
 
-			const string certs( "/home/jmt/websites/certs/webkruncher/" );
+			const string certs( "/etc/certs/webkruncher/" );
 			o.cadir=certs;
 			o.certfile=certs+string("WEBKRUNCHER.COM.crt");
 			o.cafile=certs+string("dv_chain.txt");
