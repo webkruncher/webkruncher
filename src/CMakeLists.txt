@@ -11,6 +11,7 @@ add_compile_options(-ggdb)
 set(
 	NIX_INCLUDE_PATHS
 		/usr/local/include/infokruncher/
+		/usr/local/include/exexml/
 		/usr/include/uuid/
 		../include
 )

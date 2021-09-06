@@ -28,10 +28,85 @@
 #include <infokruncher.h>
 #include <infosite.h>
 #include <webkruncher.h>
+#include <exexml.h>
 
+namespace ServiceXml
+{
+	using namespace XmlFamily;
+
+	struct Item : XmlNode
+	{
+		friend struct Configuration;
+		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name) 
+		{ 
+			XmlNodeBase* ret(NULL);
+			ret=new Item(_doc,parent,name,servicelist); 
+			return ret;
+		}
+		virtual ostream& operator<<(ostream& o) { XmlNode::operator<<(o); return o;}
+		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
+		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist ) : XmlNode(_doc,_parent,_name ), servicelist( _servicelist ) {}
+		operator bool () const
+		{
+			if ( name == "domain" ) 
+			{
+				InfoKruncher::SocketProcessOptions o;
+				servicelist.push_back( o );
+			}
+			if ( ! servicelist.empty() ) Load( servicelist.back() );
+
+			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
+			{
+				const Item& n=static_cast<const Item&>(*(*it));
+				if (!n) return false;
+			}
+			return true;
+		}
+	
+		private:
+		void Load( InfoKruncher::SocketProcessOptions& options ) const
+		{
+				for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
+					it!=attributes.end();it++)
+						options( it->first, it->second );
+		}
+		ServiceList& servicelist;
+	};
+	inline ostream& operator<<(ostream& o,Item& xmlnode){return xmlnode.operator<<(o);}
+
+	struct Configuration : Xml
+	{
+		Configuration( ServiceList& _servicelist ) : servicelist( _servicelist ) {}
+		virtual XmlNode* NewNode(Xml& _doc,stringtype name) { return new Item(_doc,NULL,name, servicelist); }
+		ostream& operator<<(ostream& o) { Xml::operator<<(o); return o;}
+		operator Item& () { if (!Root) throw string("No root node"); return static_cast<Item&>(*Root); }
+		operator bool() const
+		{
+			if ( ! Root ) return false;
+			const Item& item( static_cast< Item& >( *Root ) );
+			return !!item;
+		}
+		private:
+		ServiceList& servicelist;
+	};
+	inline ostream& operator<<(ostream& o,Configuration& xml){return xml.operator<<(o);}
+} // ServiceXml
 
 	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
+
+		KruncherTools::Args::const_iterator xmlname( options.find( "--xml" ) );
+		if ( xmlname != options.end() )
+		{
+			ServiceXml::Configuration xml( *this );
+			const string xmltxt( LoadFile( xmlname->second ) );
+			if ( xmltxt.empty() ) return false;
+			xml.Load( (char*)xmltxt.c_str() );
+			return  !! xml;
+		}
+			
+		
+		
 		if ( options.find( "--http" ) != options.end() )
 		{
 			InfoKruncher::SocketProcessOptions o;

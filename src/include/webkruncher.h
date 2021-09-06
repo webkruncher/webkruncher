@@ -32,7 +32,16 @@
 	struct ServiceList : vector< InfoKruncher::SocketProcessOptions >
 	{
 		virtual bool operator ()( const KruncherTools::Args& );
-	};
+		private:
+		friend ostream& operator<<(ostream&,const ServiceList &);
+		virtual ostream& operator<<(ostream& o) const
+		{
+			for (const_iterator it=begin();it!=end();it++) o << (*it) << endl;
+			return o;
+		}
+	}; 
+
+	inline ostream& operator<<(ostream& o,const ServiceList & m) { return m.operator<<(o); }
 
 	struct WebKruncher : InfoKruncher::Site
 	{

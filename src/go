@@ -5,24 +5,39 @@ OStag=`uname -a | cut -d ' ' -f1`
 
 
 if [ "${1}" == "rebuild" ]; then
+	shift
 	sudo rm -rf ../src.build
-	pushd ~/informationkruncher/src
+	mkdir -p ../src.build
+	cmake  -S . -B ../src.build/  
+	pushd ~/Info/informationkruncher/src
 	sudo rm -rf ../src.build
 	./go
 	sudo ./go install
 	popd
-	./go
-	sudo pkill webkruncher
-	sudo ./go install
-	sudo webkruncher ${2-}
 fi
 
 
 echo -ne "\033[32mBuilding WebKruncher for ${OS}\033[0m\n"
-mkdir -p ../src.build
-cmake  -S . -B ../src.build/  
 cmake  --build ../src.build/ 
 [ $? != 0 ] && exit -1
 
-[ "${1}" == "install" ] &&  cmake --install ../src.build
-exit 0
+if [ "${1}" == "test" ]; then
+	shift
+	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config
+fi
+
+if [ "${1}" == "run" ]; then
+	shift
+	sudo ../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml 
+fi
+
+if [ "${1}" == "install" ]; then 
+	shift
+	sudo pkill webkruncher
+	sleep 1
+	cmake --install ../src.build
+	webkruncher --http --https
+fi
+
+
+

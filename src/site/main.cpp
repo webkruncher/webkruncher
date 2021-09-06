@@ -52,11 +52,18 @@ int main( int argc, char** argv )
 		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
 		if ( ! options ) throw "Invalid options";
+
+		const ServiceList& workerlist( options.workerlist );
+		if ( options.find( "--check-config" ) != options.end() )
+		{
+			cout << "Configuration:" << endl << workerlist << endl;
+			return 0;
+		}
+		
 		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
 
 		Sites sites;
 
-		const ServiceList& workerlist( options.workerlist );
 		for ( ServiceList::const_iterator it=workerlist.begin(); it!=workerlist.end(); it++ )
 		{
 			InfoKruncher::Service<WebKruncher> info;
