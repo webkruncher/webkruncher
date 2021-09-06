@@ -72,6 +72,7 @@ namespace ServiceXml
 				Load( o );
 				servicelist.push_back( o );
 			}
+
 			Load( NodeOptions );
 
 			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
