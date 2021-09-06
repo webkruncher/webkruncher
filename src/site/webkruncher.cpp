@@ -101,9 +101,9 @@ namespace ServiceXml
 			if ( name != "root" )
 			{
 				for ( int j=0; j<__tablevel; j++ ) o << tab;
-				o << name << endl ;
+				o << green << name << normal << endl ;
 				stringstream ss;
-				ss << NodeOptions ;
+				ss << yellow << NodeOptions << normal;
 				const string st( Tabify( ss.str(), __tablevel ) );
 				o << st ;
 			}
