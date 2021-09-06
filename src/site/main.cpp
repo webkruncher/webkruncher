@@ -48,7 +48,7 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		cout << yellow << "webkruncher is starting up" << normal << endl;
+		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
 		if ( ! options ) throw "Invalid options";
@@ -56,7 +56,7 @@ int main( int argc, char** argv )
 		const ServiceList& workerlist( options.workerlist );
 		if ( options.find( "--check-config" ) != options.end() )
 		{
-			cout << "Configuration:" << endl << workerlist << endl;
+			//cerr << "Configuration:" << endl << workerlist << endl;
 			return 0;
 		}
 		

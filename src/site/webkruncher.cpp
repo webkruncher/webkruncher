@@ -30,6 +30,23 @@
 #include <webkruncher.h>
 #include <exexml.h>
 
+
+string Tabify( const string line, const int ntabs )
+{
+	stringstream ss;
+	stringvector lines;
+	lines.split( line, "\n" );
+	for ( stringvector::iterator it=lines.begin();it!=lines.end();it++)
+	{
+		string L( *it );
+		for ( int j=0; j<ntabs; j++ ) ss << tab;
+		ss << L << endl;
+		
+	}
+	return ss.str();
+}
+
+
 namespace ServiceXml
 {
 	using namespace XmlFamily;
@@ -41,19 +58,21 @@ namespace ServiceXml
 		{ 
 			XmlNodeBase* ret(NULL);
 			ret=new Item(_doc,parent,name,servicelist); 
+			ret->SetTabLevel( __tablevel+1 );
 			return ret;
 		}
-		virtual ostream& operator<<(ostream& o) { XmlNode::operator<<(o); return o;}
+		virtual ostream& operator<<(ostream& o) const ;
 		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
 		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist ) : XmlNode(_doc,_parent,_name ), servicelist( _servicelist ) {}
 		operator bool () const
 		{
-			if ( name == "domain" ) 
+			if ( name == "site" ) 
 			{
 				InfoKruncher::SocketProcessOptions o;
+				Load( o );
 				servicelist.push_back( o );
 			}
-			if ( ! servicelist.empty() ) Load( servicelist.back() );
+			Load( NodeOptions );
 
 			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
 			{
@@ -71,14 +90,43 @@ namespace ServiceXml
 						options( it->first, it->second );
 		}
 		ServiceList& servicelist;
+		mutable InfoKruncher::SocketProcessOptions NodeOptions;
 	};
-	inline ostream& operator<<(ostream& o,Item& xmlnode){return xmlnode.operator<<(o);}
+	inline ostream& operator<<(ostream& o,const Item& xmlnode){return xmlnode.operator<<(o);}
+
+
+		ostream& Item::operator<<(ostream& o)  const
+		{
+			if ( name != "root" )
+			{
+				for ( int j=0; j<__tablevel; j++ ) o << tab;
+				o << name << endl ;
+				stringstream ss;
+				ss << NodeOptions ;
+				const string st( Tabify( ss.str(), __tablevel ) );
+				o << st ;
+			}
+
+			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
+			{
+				const Item& n=static_cast<const Item&>(*(*it));
+				o  << n;
+			}
+			return o;
+		}
+
 
 	struct Configuration : Xml
 	{
 		Configuration( ServiceList& _servicelist ) : servicelist( _servicelist ) {}
 		virtual XmlNode* NewNode(Xml& _doc,stringtype name) { return new Item(_doc,NULL,name, servicelist); }
-		ostream& operator<<(ostream& o) { Xml::operator<<(o); return o;}
+		ostream& operator<<(ostream& o) const //
+		{
+			if ( ! Root ) return o;
+			const Item& nodes( static_cast< const Item& >( *Root ) );
+			o << nodes;
+			return o;
+		}
 		operator Item& () { if (!Root) throw string("No root node"); return static_cast<Item&>(*Root); }
 		operator bool() const
 		{
@@ -102,7 +150,9 @@ namespace ServiceXml
 			const string xmltxt( LoadFile( xmlname->second ) );
 			if ( xmltxt.empty() ) return false;
 			xml.Load( (char*)xmltxt.c_str() );
-			return  !! xml;
+			if (  ! xml ) return false;;
+			if ( options.find( "--check-config" ) != options.end() )
+				cerr << xml << endl;
 		}
 			
 		
