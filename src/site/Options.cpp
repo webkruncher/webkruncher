@@ -84,25 +84,25 @@ namespace ServiceXml
 	inline ostream& operator<<(ostream& o,const Item& xmlnode){return xmlnode.operator<<(o);}
 
 
-		ostream& Item::operator<<(ostream& o)  const
+	ostream& Item::operator<<(ostream& o)  const
+	{
+		if ( name != "root" )
 		{
-			if ( name != "root" )
-			{
-				for ( int j=0; j<__tablevel; j++ ) o << tab;
-				o << green << name << normal << endl ;
-				stringstream ss;
-				ss << yellow << NodeOptions << normal;
-				const string st( KruncherTools::Tabify( ss.str(), __tablevel ) );
-				o << st ;
-			}
-
-			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
-			{
-				const Item& n=static_cast<const Item&>(*(*it));
-				o  << n;
-			}
-			return o;
+			for ( int j=0; j<__tablevel; j++ ) o << tab;
+			o << green << name << normal << endl ;
+			stringstream ss;
+			ss << yellow << NodeOptions << normal;
+			const string st( KruncherTools::Tabify( ss.str(), __tablevel ) );
+			o << st ;
 		}
+
+		for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
+		{
+			const Item& n=static_cast<const Item&>(*(*it));
+			o  << n;
+		}
+		return o;
+	}
 
 
 	struct Configuration : Xml
@@ -142,6 +142,7 @@ namespace ServiceXml
 			if (  ! xml ) return false;;
 			if ( options.find( "--check-config" ) != options.end() )
 				cerr << xml << endl;
+			return true;
 		}
 			
 		
