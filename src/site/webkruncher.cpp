@@ -58,7 +58,8 @@ namespace ServiceXml
 		{ 
 			XmlNodeBase* ret(NULL);
 			ret=new Item(_doc,parent,name,servicelist); 
-			ret->SetTabLevel( __tablevel+1 );
+			Item& n=static_cast<Item&>(*(ret));
+			n.SetTabLevel( __tablevel+1 );
 			return ret;
 		}
 		virtual ostream& operator<<(ostream& o) const ;
@@ -78,6 +79,7 @@ namespace ServiceXml
 			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
 			{
 				const Item& n=static_cast<const Item&>(*(*it));
+				n.NodeOptions=NodeOptions;
 				if (!n) return false;
 			}
 			return true;
