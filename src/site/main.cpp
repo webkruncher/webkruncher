@@ -48,10 +48,9 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		Initialize();
 		InfoKruncher::Options< ServiceList > options( argc, argv );
-		if ( ! options ) throw "Invalid options";
+		if ( ! options ) throw string( "Invalid options" );
 
 		const ServiceList& workerlist( options.workerlist );
 		if ( options.find( "--check-config" ) != options.end() )
@@ -60,6 +59,7 @@ int main( int argc, char** argv )
 			return 0;
 		}
 		
+		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
 
 		Sites sites;
