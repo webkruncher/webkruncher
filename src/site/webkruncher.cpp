@@ -32,7 +32,7 @@
 
 	string WebKruncher::LoadResponse( Responder& r  )
 	{
-		int status( 401 );
+		int status( 400 );
 
 		stringstream ss;
 
