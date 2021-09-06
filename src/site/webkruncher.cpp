@@ -50,8 +50,10 @@
 		ssmsg << fence << filename; 
 		Log( "WebKruncher::LoadResponse", ssmsg.str() );
 
+
+		const string host( Hyper::mimevalue( r.headers, "host" ) );
 		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
-		const string CookieName("webkruncher.com");
+		const string CookieName( host );
 
 		string NewCookie;
 
@@ -59,8 +61,9 @@
 		{
 			NewCookie=KruncherTools::GetUuid();
 			{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
-		}
-
+			cerr << green << fence << r.uri << fence << yellow << host  << red << fence << NewCookie << fence << normal << endl;
+		} else 
+			cerr << green << fence << r.uri << fence << yellow << host  << teal << fence << ExistingCookie << fence << normal << endl;
 
 		stringstream response;
 		response << "HTTP/1.1 ";
