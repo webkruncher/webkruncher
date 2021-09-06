@@ -7,6 +7,7 @@ add_executable(
 	webkruncher
 		main.cpp
 		webkruncher.cpp
+		Options.cpp
 )
 
 #add_library( kruncher::webkruncher  ALIAS webkruncher  )
