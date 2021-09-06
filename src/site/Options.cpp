@@ -54,24 +54,14 @@ namespace ServiceXml
 			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), filter( _filter )  {}
 		operator bool () const
 		{
-#if 0
-			if ( name == "filter" ) 
-			{
-				XmlFamily::XmlAttributes::const_iterator it( attributes.find( "hostname" ) );
-				if ( it != attributes.end() )
-					if ( filter != it->second ) return true;
-			}
-#endif
+			Load( NodeOptions );
 			if ( Filtered() ) return true;
-
 			if ( name == "site" ) 
 			{
 				InfoKruncher::SocketProcessOptions o;
 				Load( o );
 				servicelist.push_back( o );
 			}
-
-			Load( NodeOptions );
 
 			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
 			{
@@ -95,6 +85,7 @@ namespace ServiceXml
 		}
 		void Load( InfoKruncher::SocketProcessOptions& options ) const
 		{
+				options=NodeOptions;
 				for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
 					it!=attributes.end();it++)
 						options( it->first, it->second );

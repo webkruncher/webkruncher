@@ -26,6 +26,8 @@ cmake  --build ../src.build/
 if [ "${1}" == "test" ]; then
 	shift
 	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter `hostname`
+	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter "webkruncher.com"
+	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter noname
 fi
 
 if [ "${1}" == "run" ]; then
