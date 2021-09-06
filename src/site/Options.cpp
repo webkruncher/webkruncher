@@ -40,19 +40,30 @@ namespace ServiceXml
 	struct Item : XmlNode
 	{
 		friend struct Configuration;
-		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name) 
+		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name )
 		{ 
 			XmlNodeBase* ret(NULL);
-			ret=new Item(_doc,parent,name,servicelist); 
+			ret=new Item(_doc,parent,name,servicelist, filter); 
 			Item& n=static_cast<Item&>(*(ret));
 			n.SetTabLevel( __tablevel+1 );
 			return ret;
 		}
 		virtual ostream& operator<<(ostream& o) const ;
 		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
-		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist ) : XmlNode(_doc,_parent,_name ), servicelist( _servicelist ) {}
+		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist, const string _filter ) 
+			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), filter( _filter )  {}
 		operator bool () const
 		{
+#if 0
+			if ( name == "filter" ) 
+			{
+				XmlFamily::XmlAttributes::const_iterator it( attributes.find( "hostname" ) );
+				if ( it != attributes.end() )
+					if ( filter != it->second ) return true;
+			}
+#endif
+			if ( Filtered() ) return true;
+
 			if ( name == "site" ) 
 			{
 				InfoKruncher::SocketProcessOptions o;
@@ -72,6 +83,16 @@ namespace ServiceXml
 		}
 	
 		private:
+		bool Filtered() const
+		{
+			if ( name == "filter" ) 
+			{
+				XmlFamily::XmlAttributes::const_iterator it( attributes.find( "hostname" ) );
+				if ( it != attributes.end() )
+					if ( filter != it->second ) return true;
+			}
+			return false;
+		}
 		void Load( InfoKruncher::SocketProcessOptions& options ) const
 		{
 				for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
@@ -80,13 +101,14 @@ namespace ServiceXml
 		}
 		ServiceList& servicelist;
 		mutable InfoKruncher::SocketProcessOptions NodeOptions;
+		const string filter;
 	};
 	inline ostream& operator<<(ostream& o,const Item& xmlnode){return xmlnode.operator<<(o);}
 
 
 	ostream& Item::operator<<(ostream& o)  const
 	{
-		if ( name != "root" )
+		if ( name == "site" )
 		{
 			for ( int j=0; j<__tablevel; j++ ) o << tab;
 			o << green << name << normal << endl ;
@@ -95,6 +117,7 @@ namespace ServiceXml
 			const string st( KruncherTools::Tabify( ss.str(), __tablevel ) );
 			o << st ;
 		}
+		if ( Filtered() ) return o;
 
 		for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
 		{
@@ -107,9 +130,9 @@ namespace ServiceXml
 
 	struct Configuration : Xml
 	{
-		Configuration( ServiceList& _servicelist ) : servicelist( _servicelist ) {}
-		virtual XmlNode* NewNode(Xml& _doc,stringtype name) { return new Item(_doc,NULL,name, servicelist); }
-		ostream& operator<<(ostream& o) const //
+		Configuration( ServiceList& _servicelist, const string _filter ) : servicelist( _servicelist ), filter( _filter ) {}
+		virtual XmlNode* NewNode(Xml& _doc,stringtype name) { return new Item(_doc,NULL,name, servicelist, filter ); }
+		ostream& operator<<(ostream& o) const 
 		{
 			if ( ! Root ) return o;
 			const Item& nodes( static_cast< const Item& >( *Root ) );
@@ -125,6 +148,7 @@ namespace ServiceXml
 		}
 		private:
 		ServiceList& servicelist;
+		const string filter;
 	};
 	inline ostream& operator<<(ostream& o,Configuration& xml){return xml.operator<<(o);}
 } // ServiceXml
@@ -135,7 +159,11 @@ namespace ServiceXml
 		KruncherTools::Args::const_iterator xmlname( options.find( "--xml" ) );
 		if ( xmlname != options.end() )
 		{
-			ServiceXml::Configuration xml( *this );
+			KruncherTools::Args::const_iterator filterit( options.find( "--filter" ) );
+			if ( filterit == options.end() ) throw string( "Use of --xml requires --filter option" );
+			
+			
+			ServiceXml::Configuration xml( *this, filterit->second );
 			const string xmltxt( LoadFile( xmlname->second ) );
 			if ( xmltxt.empty() ) return false;
 			xml.Load( (char*)xmltxt.c_str() );

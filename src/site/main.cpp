@@ -56,7 +56,7 @@ int main( int argc, char** argv )
 		const ServiceList& workerlist( options.workerlist );
 		if ( options.find( "--check-config" ) != options.end() )
 		{
-			//cerr << "Configuration:" << endl << workerlist << endl;
+			cerr << "Configuration:" << endl << workerlist << endl;
 			return 0;
 		}
 		
