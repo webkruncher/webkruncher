@@ -29,7 +29,6 @@ set(
 )
 
 IF(CMAKE_SYSTEM_NAME STREQUAL OpenBSD)
-	message( "THIS IS UNIX" )
 	add_definitions( -DUNIX )
 	set(
 		INCLUDE_PATHS
@@ -46,7 +45,6 @@ IF(CMAKE_SYSTEM_NAME STREQUAL OpenBSD)
 ENDIF()
 
 IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
-	message( "THIS IS Linux" )
 	add_definitions( -DLINUX )
 	set(
 		INCLUDE_PATHS

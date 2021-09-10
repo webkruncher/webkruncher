@@ -19,6 +19,7 @@ echo -ne "\033[32mBuilding WebKruncher for ${OS}\033[0m\n"
 if [ ! -d ../src.build ]; then
 	mkdir -p ../src.build
 	cmake  -S . -B ../src.build/  
+	[ $? != 0 ] && exit -1
 fi
 cmake  --build ../src.build/ 
 [ $? != 0 ] && exit -1
