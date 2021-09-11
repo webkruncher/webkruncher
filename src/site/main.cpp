@@ -31,14 +31,18 @@
 #include <webkruncher.h>
 
 
-template<> void InfoKruncher::Service< WebKruncher >::ForkAndServe( const SocketProcessOptions& svcoptions )
+namespace InfoKruncher
 {
-	if ( svcoptions.protocol == http )  RunService< streamingsocket  >( svcoptions );
-	if ( svcoptions.protocol == https ) RunService< streamingsocket >( svcoptions );
-}
+	template<> 
+		void InfoKruncher::Service< WebKruncher >::ForkAndServe( const SocketProcessOptions& svcoptions )
+	{
+		Site& s( * this );
+		//ServiceBase::RunService( svcoptions );
+	}
+	template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
+} // InfoKruncher
 
 struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
-template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
 void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
@@ -66,11 +70,13 @@ int main( int argc, char** argv )
 
 		for ( ServiceList::const_iterator it=workerlist.begin(); it!=workerlist.end(); it++ )
 		{
+#if 0
 			InfoKruncher::Service<WebKruncher> info;
 			sites.push_back( info );
 			InfoKruncher::Service<WebKruncher>& site( sites.back() );
 			const InfoKruncher::SocketProcessOptions& svcoptions( *it );
 			site.ForkAndServe( svcoptions);
+#endif
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
 		Log( "webkruncher is exiting" );
