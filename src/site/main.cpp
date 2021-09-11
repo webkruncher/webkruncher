@@ -36,8 +36,7 @@ namespace InfoKruncher
 	template<> 
 		void InfoKruncher::Service< WebKruncher >::ForkAndServe( const SocketProcessOptions& svcoptions )
 	{
-		Site& s( * this );
-		//ServiceBase::RunService( svcoptions );
+		RunService( svcoptions );
 	}
 	template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
 } // InfoKruncher
@@ -70,13 +69,11 @@ int main( int argc, char** argv )
 
 		for ( ServiceList::const_iterator it=workerlist.begin(); it!=workerlist.end(); it++ )
 		{
-#if 0
 			InfoKruncher::Service<WebKruncher> info;
-			sites.push_back( info );
+			//sites.push_back( info );
 			InfoKruncher::Service<WebKruncher>& site( sites.back() );
 			const InfoKruncher::SocketProcessOptions& svcoptions( *it );
 			site.ForkAndServe( svcoptions);
-#endif
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
 		Log( "webkruncher is exiting" );
