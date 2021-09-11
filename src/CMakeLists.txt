@@ -63,6 +63,7 @@ IF(CMAKE_SYSTEM_NAME STREQUAL Linux)
 ENDIF()
 
 
+set(CMAKE_CXX_COMPILER "g++")
 add_subdirectory( include )
 add_subdirectory( site )
 

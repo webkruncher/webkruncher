@@ -44,8 +44,8 @@
 		if ( ss.str().size() ) status=200;
 
 		stringstream ssmsg;
-		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::https ) ssmsg << "https";
-		if ( r.options.protocol == InfoKruncher::SocketProcessOptions::Protocol::http )  ssmsg << "http";
+		if ( r.options.protocol == InfoKruncher::https ) ssmsg << "https";
+		if ( r.options.protocol == InfoKruncher::http )  ssmsg << "http";
 
 		ssmsg << fence << filename; 
 		Log( "WebKruncher::LoadResponse", ssmsg.str() );

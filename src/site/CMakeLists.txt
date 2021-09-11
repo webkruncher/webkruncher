@@ -1,5 +1,5 @@
 
-set(CMAKE_CXX_FLAGS " -std=c++11 -pthread " )
+set(CMAKE_CXX_FLAGS "  -pthread " )
 
 get_filename_component(INCLUDES_PATH ../include/ REALPATH) 
 

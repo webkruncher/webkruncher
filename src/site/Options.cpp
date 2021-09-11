@@ -170,7 +170,7 @@ namespace ServiceXml
 		{
 			InfoKruncher::SocketProcessOptions o;
 			o.port=80;
-			o.protocol=InfoKruncher::SocketProcessOptions::Protocol::http;
+			o.protocol=InfoKruncher::http;
 			o.path="/home/jmt/websites/text/webkruncher/";
 			push_back( o );
 		}
@@ -180,7 +180,7 @@ namespace ServiceXml
 			SecureInformation::init_openssl();
 			InfoKruncher::SocketProcessOptions o;
 			o.port=443;
-			o.protocol=InfoKruncher::SocketProcessOptions::Protocol::https;
+			o.protocol=InfoKruncher::https;
 			o.path="/home/jmt/websites/text/webkruncher/";
 
 			const string passwordfile( "/etc/webkruncher.pwd" );
