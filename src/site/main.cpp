@@ -41,8 +41,8 @@ namespace InfoKruncher
 	template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
 } // InfoKruncher
 
-struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
-void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
+//struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
+//void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
 
@@ -56,6 +56,9 @@ int main( int argc, char** argv )
 		if ( ! options ) throw string( "Invalid options" );
 
 		const ServiceList& workerlist( options.workerlist );
+
+		const size_t nSites( options.workerlist.size() );
+
 		if ( options.find( "--check-config" ) != options.end() )
 		{
 			cerr << "Configuration:" << endl << workerlist << endl;
@@ -65,19 +68,17 @@ int main( int argc, char** argv )
 		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
 
-		Sites sites;
+		InfoKruncher::Service<WebKruncher> sites[ nSites ];
 
-		for ( ServiceList::const_iterator it=workerlist.begin(); it!=workerlist.end(); it++ )
+		for ( size_t c=0;  c < nSites; c++ )
 		{
-			InfoKruncher::Service<WebKruncher> info;
-			//sites.push_back( info );
-			InfoKruncher::Service<WebKruncher>& site( sites.back() );
-			const InfoKruncher::SocketProcessOptions& svcoptions( *it );
+			InfoKruncher::Service<WebKruncher>& site( sites[ c ] );
+			const InfoKruncher::SocketProcessOptions& svcoptions( workerlist[ c ] );
 			site.ForkAndServe( svcoptions);
 		}
 		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
 		Log( "webkruncher is exiting" );
-		sites.Terminate();
+		for ( size_t t=0; t < nSites; t++ ) sites[ t ].Terminate();
 	}
 	catch( const exception& e ) { ssexcept<<e.what(); }
 	catch( const string& s ) { ssexcept<<s;}
