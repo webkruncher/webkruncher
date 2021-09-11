@@ -33,6 +33,8 @@ fi
 
 if [ "${1}" == "run" ]; then
 	shift
+	sudo pkill webkruncher
+	sleep 2
 	sudo ../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml  --filter `hostname`
 fi
 
