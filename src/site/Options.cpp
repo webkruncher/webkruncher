@@ -40,11 +40,11 @@ namespace ServiceXml
 	struct Item : XmlNode
 	{
 		friend struct Configuration;
-		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name )
+		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name ) const
 		{ 
 			XmlNodeBase* ret(NULL);
 			ret=new Item(_doc,parent,name,servicelist, filter); 
-			Item& n=static_cast<Item&>(*(ret));
+			Item& n=( static_cast<Item&>(*(ret)) );
 			n.SetTabLevel( __tablevel+1 );
 			return ret;
 		}
@@ -52,7 +52,7 @@ namespace ServiceXml
 		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
 		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist, const string _filter ) 
 			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), filter( _filter )  {}
-		operator bool () const
+		operator bool () 
 		{
 			Load( NodeOptions );
 			if ( Filtered() ) return true;
@@ -63,9 +63,9 @@ namespace ServiceXml
 				servicelist.push_back( o );
 			}
 
-			for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
+			for (XmlFamily::XmlNodeSet::iterator it=children.begin();it!=children.end();it++) 
 			{
-				const Item& n=static_cast<const Item&>(*(*it));
+				Item& n(static_cast<Item&>(*(*it)));
 				n.NodeOptions=NodeOptions;
 				if (!n) return false;
 			}
@@ -83,15 +83,19 @@ namespace ServiceXml
 			}
 			return false;
 		}
-		void Load( InfoKruncher::SocketProcessOptions& options ) const
+		void Load( InfoKruncher::SocketProcessOptions& options ) 
 		{
 				options=NodeOptions;
 				for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
 					it!=attributes.end();it++)
-						options( it->first, it->second );
+					{
+						const string name( it->first );
+						const string value( it->second );
+						options( name, value );
+					}
 		}
 		ServiceList& servicelist;
-		mutable InfoKruncher::SocketProcessOptions NodeOptions;
+		InfoKruncher::SocketProcessOptions NodeOptions;
 		const string filter;
 	};
 	inline ostream& operator<<(ostream& o,const Item& xmlnode){return xmlnode.operator<<(o);}
@@ -112,7 +116,7 @@ namespace ServiceXml
 
 		for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
 		{
-			const Item& n=static_cast<const Item&>(*(*it));
+			const Item& n=( static_cast<const Item&>(*(*it)) );
 			o  << n;
 		}
 		return o;
@@ -122,7 +126,7 @@ namespace ServiceXml
 	struct Configuration : Xml
 	{
 		Configuration( ServiceList& _servicelist, const string _filter ) : servicelist( _servicelist ), filter( _filter ) {}
-		virtual XmlNode* NewNode(Xml& _doc,stringtype name) { return new Item(_doc,NULL,name, servicelist, filter ); }
+		virtual XmlNode* NewNode(Xml& _doc,stringtype name) const { return new Item(_doc,NULL,name, servicelist, filter ); } 
 		ostream& operator<<(ostream& o) const 
 		{
 			if ( ! Root ) return o;
@@ -131,10 +135,10 @@ namespace ServiceXml
 			return o;
 		}
 		operator Item& () { if (!Root) throw string("No root node"); return static_cast<Item&>(*Root); }
-		operator bool() const
+		operator bool()
 		{
 			if ( ! Root ) return false;
-			const Item& item( static_cast< Item& >( *Root ) );
+			Item& item( static_cast< Item& >( *Root ) );
 			return !!item;
 		}
 		private:
@@ -146,13 +150,11 @@ namespace ServiceXml
 
 	bool ServiceList::operator()( const KruncherTools::Args& options)
 	{
-
 		KruncherTools::Args::const_iterator xmlname( options.find( "--xml" ) );
 		if ( xmlname != options.end() )
 		{
 			KruncherTools::Args::const_iterator filterit( options.find( "--filter" ) );
 			if ( filterit == options.end() ) throw string( "Use of --xml requires --filter option" );
-			
 			
 			ServiceXml::Configuration xml( *this, filterit->second );
 			const string xmltxt( LoadFile( xmlname->second ) );
@@ -164,8 +166,6 @@ namespace ServiceXml
 			return true;
 		}
 			
-		
-		
 		if ( options.find( "--http" ) != options.end() )
 		{
 			InfoKruncher::SocketProcessOptions o;

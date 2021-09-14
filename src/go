@@ -4,13 +4,13 @@ OStag=`uname -a | cut -d ' ' -f1`
 [ ${OStag} == "OpenBSD" ] && export OS=UNIX
 
 
-if [ "${1}" == "rebuild" ]; then
+if [ "${1}" == "-rebuild" ]; then
 	shift
 	sudo rm -rf ../src.build
 	pushd ~/Info/informationkruncher/src
 	sudo rm -rf ../src.build
 	./go
-	sudo ./go install
+	sudo ./go -install
 	popd
 fi
 
@@ -24,21 +24,21 @@ fi
 cmake  --build ../src.build/ 
 [ $? != 0 ] && exit -1
 
-if [ "${1}" == "test" ]; then
+if [ "${1}" == "-test" ]; then
 	shift
 	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter `hostname`
 	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter "webkruncher.com"
 	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter noname
 fi
 
-if [ "${1}" == "run" ]; then
+if [ "${1}" == "-run" ]; then
 	shift
 	sudo pkill webkruncher
 	sleep 2
 	sudo ../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml  --filter `hostname`
 fi
 
-if [ "${1}" == "install" ]; then 
+if [ "${1}" == "-install" ]; then 
 	shift
 	sudo pkill webkruncher
 	sleep 1
