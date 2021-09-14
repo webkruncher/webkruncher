@@ -28,53 +28,49 @@
 #include <infokruncher.h>
 #include <infosite.h>
 #include <webkruncher.h>
-#include <exexml.h>
+#include <db/auth/infoxmlauth.h>
+#include <db/site/infodataservice.h>
+#include <db/records/recordset.h>
+
 
 	string WebKruncher::LoadResponse( Responder& r  )
 	{
+		InfoDb::Site::Roles roles( r.uri, r.headers, r.ipaddr, r.options.text );	
 		int status( 400 );
 
 		stringstream ss;
 
-		const string contenttype(Hyper::ContentType( r.uri ));
+		DbRecords::RecordSet<InfoDataService::Visitor> records;
+		records+=r;
+
+		const string contenttype( Hyper::ContentType( r.uri ) );
 
 		const string filename( r.options.path + r.uri );
 
-		LoadFile(filename.c_str(), ss);
+		LoadFile( filename.c_str(), ss );
 		if ( ss.str().size() ) status=200;
+		
+		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
+
+		const string& Text( auth );
+		status=auth;
 
 		stringstream ssmsg;
 		if ( r.options.protocol == InfoKruncher::https ) ssmsg << "https";
 		if ( r.options.protocol == InfoKruncher::http )  ssmsg << "http";
 
-		ssmsg << fence << filename; 
-		Log( "WebKruncher::LoadResponse", ssmsg.str() );
-
-
-		const string host( Hyper::mimevalue( r.headers, "host" ) );
-		const string ExistingCookie( Hyper::mimevalue( r.headers, "cookie" ) );
-		const string CookieName( host );
-
-		string NewCookie;
-
-		if ( ExistingCookie.empty() )
-		{
-			NewCookie=KruncherTools::GetUuid();
-			{stringstream ssl; ssl<<"Created uuid:" << NewCookie; Log( ssl.str() );}
-			cerr << green << fence << r.uri << fence << yellow << host  << red << fence << NewCookie << fence << normal << endl;
-		} else 
-			cerr << green << fence << r.uri << fence << yellow << host  << teal << fence << ExistingCookie << fence << normal << endl;
 
 		stringstream response;
 		response << "HTTP/1.1 ";
 		response << status << " " << Hyper::statusText(status) << endl;
 		response << "Content-Type: " << contenttype << endl;
-		response << "Server: WebKruncher" << endl;
+		response << "Server: InfoSite" << endl;
 		response << "Connection: close" << endl;
-		response << "Content-Length:" << ss.str().size() << endl;
-		if ( ! NewCookie.empty() ) response << "Set-Cookie:" << CookieName << "=" << NewCookie << ";" << endl;
+		response << "Content-Length:" << Text.size() << endl;
+		if ( records.IsNewCookie() ) response << "Set-Cookie:" << records.CookieName() << "=" << records.Cookie() << ";" << endl;
 		response << endl;
-		response << ss.str();
+
+		response << Text;
 
 		string s( response.str() );
 		return s;

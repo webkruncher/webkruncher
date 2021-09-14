@@ -2,15 +2,14 @@ cmake_minimum_required(VERSION 3.10)
 
 project("webkruncher")
 
-#find_library(infokruncher REQUIRED )
-
-message( SYSTEM: ${CMAKE_SYSTEM_NAME} ) 
 
 add_compile_options(-ggdb)
 
 set(
 	NIX_INCLUDE_PATHS
 		/usr/local/include/infokruncher/
+		/usr/local/include/infokruncher/db/
+		/usr/local/include/infokruncher/db/auth/
 		/usr/local/include/exexml/
 		/usr/include/uuid/
 		../include
@@ -24,6 +23,9 @@ set(
 set(
 	NIX_LIBRARIES
 			informationkruncher
+			auth
+			records
+			site
 			ssl	
 			crypto	
 )

@@ -30,6 +30,11 @@ target_link_libraries(
     webkruncher
 	    PUBLIC
 			${LIBRARIES}
+			kruncher::headers
+			auth
+			site
+			records
+			/home/jmt/libdb/build_unix/libdb_cxx.a
 )
 
 install(

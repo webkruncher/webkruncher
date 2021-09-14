@@ -44,11 +44,11 @@ namespace ServiceXml
 		{ 
 			XmlNodeBase* ret(NULL);
 			ret=new Item(_doc,parent,name,servicelist, filter); 
-			Item& n=( static_cast<Item&>(*(ret)) );
+			Item& n( static_cast<Item&>(*(ret)) );
 			n.SetTabLevel( __tablevel+1 );
 			return ret;
 		}
-		virtual ostream& operator<<(ostream& o) const ;
+
 		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
 		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist, const string _filter ) 
 			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), filter( _filter )  {}
@@ -85,43 +85,23 @@ namespace ServiceXml
 		}
 		void Load( InfoKruncher::SocketProcessOptions& options ) 
 		{
-				options=NodeOptions;
-				for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
-					it!=attributes.end();it++)
-					{
-						const string name( it->first );
-						const string value( it->second );
-						options( name, value );
-					}
+			options=NodeOptions;
+			XmlNode& node( *this );
+			stringstream ss;
+			ss <<  node ;
+			options.text=ss.str();
+			for(XmlFamily::XmlAttributes::const_iterator it=attributes.begin();
+				it!=attributes.end();it++)
+				{
+					const string name( it->first.c_str() );
+					const string value( it->second.c_str() );
+					options( name, value );
+				}
 		}
 		ServiceList& servicelist;
 		InfoKruncher::SocketProcessOptions NodeOptions;
 		const string filter;
 	};
-	inline ostream& operator<<(ostream& o,const Item& xmlnode){return xmlnode.operator<<(o);}
-
-
-	ostream& Item::operator<<(ostream& o)  const
-	{
-		if ( name == "site" )
-		{
-			for ( int j=0; j<__tablevel; j++ ) o << tab;
-			o << green << name << normal << endl ;
-			stringstream ss;
-			ss << yellow << NodeOptions << normal;
-			const string st( KruncherTools::Tabify( ss.str(), __tablevel ) );
-			o << st ;
-		}
-		if ( Filtered() ) return o;
-
-		for (XmlFamily::XmlNodeSet::const_iterator it=children.begin();it!=children.end();it++) 
-		{
-			const Item& n=( static_cast<const Item&>(*(*it)) );
-			o  << n;
-		}
-		return o;
-	}
-
 
 	struct Configuration : Xml
 	{
@@ -130,7 +110,7 @@ namespace ServiceXml
 		ostream& operator<<(ostream& o) const 
 		{
 			if ( ! Root ) return o;
-			const Item& nodes( static_cast< const Item& >( *Root ) );
+			Item& nodes( static_cast<Item& >( *Root ) );
 			o << nodes;
 			return o;
 		}
