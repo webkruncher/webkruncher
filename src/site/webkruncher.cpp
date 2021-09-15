@@ -32,23 +32,38 @@
 #include <db/site/infodataservice.h>
 #include <db/records/recordset.h>
 
+	struct DataResource : InfoKruncher::Resource
+	{
+		DataResource( const InfoKruncher::Responder& _responder ) 
+			: InfoKruncher::Resource( _responder ) {}
+		virtual operator bool ();
+	};
+	
+	DataResource::operator bool ()
+	{
+		
+		uri= ( ( ( responder.method == "GET" ) && ( responder.resource == "/" ) ) ? "index.html" : string(".") + responder.resource );
+		contenttype=( Hyper::ContentType( uri ) );
+		const string filename( responder.options.path + uri );
+		LoadFile( filename.c_str(), payload );
+		return true;
+	}
 
 	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
 	{
-		const string uri( ( ( r.method == "GET" ) && ( r.resource == "/" ) ) ? "index.html" : string(".") + r.resource );
+		DataResource Payload( r );
+		if ( ! Payload ) return "";
+		const string& uri( Payload.uri );
+
 		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
 		int status( 400 );
 
-		stringstream ss;
 
 		DbRecords::RecordSet<InfoDataService::Visitor> records;
 		records+=r;
 
-		const string contenttype( Hyper::ContentType( uri ) );
-
-		const string filename( r.options.path + uri );
-
-		LoadFile( filename.c_str(), ss );
+		const string& contenttype( Payload.contenttype );
+		const stringstream& ss( Payload.payload );
 		if ( ss.str().size() ) status=200;
 		
 		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
