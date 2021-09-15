@@ -35,7 +35,8 @@
 
 	string WebKruncher::LoadResponse( Responder& r  )
 	{
-		InfoDb::Site::Roles roles( r.uri, r.headers, r.ipaddr, r.options.text );	
+		const string uri( ( ( r.method == "GET" ) && ( r.resource == "/" ) ) ? "index.html" : string(".") + r.resource );
+		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
 		int status( 400 );
 
 		stringstream ss;
@@ -43,9 +44,9 @@
 		DbRecords::RecordSet<InfoDataService::Visitor> records;
 		records+=r;
 
-		const string contenttype( Hyper::ContentType( r.uri ) );
+		const string contenttype( Hyper::ContentType( uri ) );
 
-		const string filename( r.options.path + r.uri );
+		const string filename( r.options.path + uri );
 
 		LoadFile( filename.c_str(), ss );
 		if ( ss.str().size() ) status=200;
