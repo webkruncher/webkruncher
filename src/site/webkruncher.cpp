@@ -58,8 +58,7 @@
 			( contenttype != "text/javascript" )
 		)
 		{
-			payload << "Cookies are required to enter this site";
-			cerr << "No Cookies:" << endl;
+			payload << "<html><h1>Cookies are required to enter this site</h1></html>";
 			contenttype="text/html";
 			Status=422;
 			return true;
@@ -69,6 +68,7 @@
 		LoadFile( filename.c_str(), payload );
 		return true;
 	}
+
 	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
 	{
 		DbRecords::RecordSet<InfoDataService::Visitor> records;
@@ -91,6 +91,14 @@
 		const string& contenttype( Payload.contenttype );
 		const stringstream& ss( Payload.payload );
 		if ( ss.str().size() ) status=200;
+		else
+		{
+			status=404;
+			stringstream sserr;
+			sserr << "<html><h1>Error " << status << ", page not found</h1></html>" << endl;
+			InfoKruncher::RestResponse respond( status, "text/html", ServiceName, false, "", "", sserr.str() );
+			return respond;
+		}
 		
 		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
 
@@ -100,52 +108,9 @@
 		InfoKruncher::RestResponse respond( status, contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), Text );
 		return respond;
 
-#if 0
-		DbRecords::RecordSet<InfoDataService::Visitor> records;
-		records+=r;
-
-		DataResource Payload( r, records );
-		if ( ! Payload ) return "";
-
-		const string& uri( Payload.uri );
-
-		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
-		int status( 400 );
-
-		const string& contenttype( Payload.contenttype );
-		const stringstream& ss( Payload.payload );
-		if ( ss.str().size() ) status=200;
-		
-		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
-
-		const string& Text( auth );
-		status=auth;
-
-		stringstream ssmsg;
-		if ( r.options.protocol == InfoKruncher::https ) ssmsg << "https";
-		if ( r.options.protocol == InfoKruncher::http )  ssmsg << "http";
-
-
-		stringstream response;
-		response << "HTTP/1.1 ";
-		response << status << " " << Hyper::statusText(status) << endl;
-		response << "Content-Type: " << contenttype << endl;
-		response << "Server: InfoSite" << endl;
-		response << "Connection: close" << endl;
-		response << "Content-Length:" << Text.size() << endl;
-		if ( records.IsNewCookie() ) response << "Set-Cookie:" << records.CookieName() << "=" << records.Cookie() << ";" << endl;
-		response << endl;
-
-		response << Text;
-
-		string s( response.str() );
-		return s;
-#endif
 	}
 
 	void WebKruncher::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
-	{
-		usleep( (rand()%10)+20 );
-	}
+		{ usleep( (rand()%10)+20 ); }
 
 
