@@ -45,7 +45,7 @@
 
 	struct WebKruncher : InfoKruncher::Site
 	{
-		virtual string LoadResponse( Responder& );
+		virtual string LoadResponse( InfoKruncher::Responder& );
 		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
 	};
 

@@ -33,7 +33,7 @@
 #include <db/records/recordset.h>
 
 
-	string WebKruncher::LoadResponse( Responder& r  )
+	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
 	{
 		const string uri( ( ( r.method == "GET" ) && ( r.resource == "/" ) ) ? "index.html" : string(".") + r.resource );
 		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
