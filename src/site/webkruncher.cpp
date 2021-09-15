@@ -30,37 +30,87 @@
 #include <webkruncher.h>
 #include <db/auth/infoxmlauth.h>
 #include <db/site/infodataservice.h>
-#include <db/records/recordset.h>
 
+	const string ServiceName( "WebKruncher" );
 	struct DataResource : InfoKruncher::Resource
 	{
-		DataResource( const InfoKruncher::Responder& _responder ) 
-			: InfoKruncher::Resource( _responder ) {}
+		DataResource( const InfoKruncher::Responder& _responder, InfoDataService::VisitorBase& _visitor  ) 
+			: 
+				InfoKruncher::Resource( _responder ), 
+				Status( 0 ) ,
+				visitor( _visitor )
+		{}
 		virtual operator bool ();
+		int Status;
+		protected:
+		InfoDataService::VisitorBase& visitor;
 	};
 	
 	DataResource::operator bool ()
 	{
-		
-		uri= ( ( ( responder.method == "GET" ) && ( responder.resource == "/" ) ) ? "index.html" : string(".") + responder.resource );
+		const bool IsDefault( responder.IsDefault() );
+		uri= ( IsDefault  ? "index.html" : string(".") + responder.resource );
 		contenttype=( Hyper::ContentType( uri ) );
+
+		if ( 
+			( ! IsDefault ) && 
+			( visitor.IsNewCookie() )  &&
+			( contenttype != "text/javascript" )
+		)
+		{
+			payload << "Cookies are required to enter this site";
+			cerr << "No Cookies:" << endl;
+			contenttype="text/html";
+			Status=422;
+			return true;
+		}
+
 		const string filename( responder.options.path + uri );
 		LoadFile( filename.c_str(), payload );
 		return true;
 	}
-
 	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
 	{
-		DataResource Payload( r );
+		DbRecords::RecordSet<InfoDataService::Visitor> records;
+		records+=r;
+
+		DataResource Payload( r, records );
 		if ( ! Payload ) return "";
+
+		if ( Payload.Status )
+		{
+			InfoKruncher::RestResponse respond( Payload.Status, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			return respond;
+		}
+
+		const string& uri( Payload.uri );
+		int status( Payload.Status );
+
+		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
+
+		const string& contenttype( Payload.contenttype );
+		const stringstream& ss( Payload.payload );
+		if ( ss.str().size() ) status=200;
+		
+		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
+
+		const string& Text( auth );
+		status=auth;
+
+		InfoKruncher::RestResponse respond( status, contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), Text );
+		return respond;
+
+#if 0
+		DbRecords::RecordSet<InfoDataService::Visitor> records;
+		records+=r;
+
+		DataResource Payload( r, records );
+		if ( ! Payload ) return "";
+
 		const string& uri( Payload.uri );
 
 		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
 		int status( 400 );
-
-
-		DbRecords::RecordSet<InfoDataService::Visitor> records;
-		records+=r;
 
 		const string& contenttype( Payload.contenttype );
 		const stringstream& ss( Payload.payload );
@@ -90,6 +140,7 @@
 
 		string s( response.str() );
 		return s;
+#endif
 	}
 
 	void WebKruncher::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
