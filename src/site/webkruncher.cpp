@@ -49,14 +49,10 @@
 		const bool IsDefault( responder.IsDefault() );
 		uri= ( IsDefault  ? "index.html" : string(".") + responder.resource );
 		contenttype=( Hyper::ContentType( uri ) );
-		if ( ! CookieCheck( IsDefault, visitor ) )  return 422;
+		if ( ! CookieCheck( IsDefault, visitor ) )  return HttpError( 422 );
 		const string filename( responder.options.path + uri );
+		if ( ! FileExists( filename ) ) return HttpError( 404 );
 		LoadFile( filename.c_str(), payload );
-		if ( payload.str().empty() ) 
-		{
-			payload << "<html><h1>Error " << 404 << ", page not found</h1></html>" << endl;
-			return 404;
-		}
 		return 0;
 	}
 
