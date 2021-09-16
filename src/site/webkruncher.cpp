@@ -52,7 +52,16 @@
 		if ( ! CookieCheck( IsDefault, visitor ) )  return HttpError( 422 );
 		const string filename( responder.options.path + uri );
 		if ( ! FileExists( filename ) ) return HttpError( 404 );
-		LoadFile( filename.c_str(), payload );
+		stringstream sfile;
+		LoadFile( filename.c_str(), sfile );
+		if ( contenttype == "text/html" )
+		{
+			Hyper::JavaScripter js(responder.options.path );
+			js.split( sfile.str(), "\n" );
+			if ( ! js ) payload << sfile.str();
+			else payload << js;
+		} else 
+			payload<<sfile.str();
 		return 0;
 	}
 
