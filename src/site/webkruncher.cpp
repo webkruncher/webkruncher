@@ -32,41 +32,32 @@
 #include <db/site/infodataservice.h>
 
 	const string ServiceName( "WebKruncher" );
-	struct DataResource : InfoKruncher::Resource
+	struct DataResource : InfoDataService::Resource
 	{
 		DataResource( const InfoKruncher::Responder& _responder, InfoDataService::VisitorBase& _visitor  ) 
 			: 
-				InfoKruncher::Resource( _responder ), 
-				Status( 0 ) ,
+				Resource( _responder ), 
 				visitor( _visitor )
 		{}
-		virtual operator bool ();
-		int Status;
+		virtual operator int ();
 		protected:
 		InfoDataService::VisitorBase& visitor;
 	};
 	
-	DataResource::operator bool ()
+	DataResource::operator int ()
 	{
 		const bool IsDefault( responder.IsDefault() );
 		uri= ( IsDefault  ? "index.html" : string(".") + responder.resource );
 		contenttype=( Hyper::ContentType( uri ) );
-
-		if ( 
-			( ! IsDefault ) && 
-			( visitor.IsNewCookie() )  &&
-			( contenttype != "text/javascript" )
-		)
-		{
-			payload << "<html><h1>Cookies are required to enter this site</h1></html>";
-			contenttype="text/html";
-			Status=422;
-			return true;
-		}
-
+		if ( ! CookieCheck( IsDefault, visitor ) )  return 422;
 		const string filename( responder.options.path + uri );
 		LoadFile( filename.c_str(), payload );
-		return true;
+		if ( payload.str().empty() ) 
+		{
+			payload << "<html><h1>Error " << 404 << ", page not found</h1></html>" << endl;
+			return 404;
+		}
+		return 0;
 	}
 
 	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
@@ -75,30 +66,21 @@
 		records+=r;
 
 		DataResource Payload( r, records );
-		if ( ! Payload ) return "";
-
-		if ( Payload.Status )
+		const int PayloadError( Payload );
+		if ( PayloadError ) 
 		{
-			InfoKruncher::RestResponse respond( Payload.Status, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			InfoKruncher::RestResponse respond( PayloadError, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 			return respond;
 		}
 
 		const string& uri( Payload.uri );
-		int status( Payload.Status );
+		int status( 200 );
 
 		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
 
 		const string& contenttype( Payload.contenttype );
 		const stringstream& ss( Payload.payload );
-		if ( ss.str().size() ) status=200;
-		else
-		{
-			status=404;
-			stringstream sserr;
-			sserr << "<html><h1>Error " << status << ", page not found</h1></html>" << endl;
-			InfoKruncher::RestResponse respond( status, "text/html", ServiceName, false, "", "", sserr.str() );
-			return respond;
-		}
+		
 		
 		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
 
