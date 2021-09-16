@@ -72,7 +72,7 @@
 		const string& uri( Payload.uri );
 		int status( 200 );
 
-		InfoDb::Site::Roles roles( uri, r.headers, r.ipaddr, r.options.text );	
+		InfoDb::Site::Roles roles( r.options.protocol, uri, r.headers, r.ipaddr, r.options.text );	
 
 		const string& contenttype( Payload.contenttype );
 		const stringstream& ss( Payload.payload );
