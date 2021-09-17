@@ -71,28 +71,38 @@
 		records+=r;
 
 		DataResource Payload( r, records );
-		const int PayloadError( Payload );
-		if ( PayloadError ) 
+		HttpStatus = Payload;
+		if ( HttpStatus ) 
 		{
-			InfoKruncher::RestResponse respond( PayloadError, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			InfoKruncher::RestResponse respond( HttpStatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 			return respond;
 		}
 
 		const string& uri( Payload.uri );
-		int status( 200 );
+		HttpStatus=200;
+
+		if ( r.method == "POST" )
+		{
+			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 2048 ) )
+			{
+				Log( "Content length too big" );
+				HttpStatus=414;
+				InfoKruncher::RestResponse respond( HttpStatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+				return respond;
+			} 
+		}
 
 		InfoDb::Site::Roles roles( r.options.protocol, uri, r.headers, r.ipaddr, r.options.text );	
 
 		const string& contenttype( Payload.contenttype );
 		const stringstream& ss( Payload.payload );
 		
-		
 		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
 
 		const string& Text( auth );
-		status=auth;
+		HttpStatus=auth;
 
-		InfoKruncher::RestResponse respond( status, contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), Text );
+		InfoKruncher::RestResponse respond( HttpStatus, contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), Text );
 		return respond;
 
 	}
