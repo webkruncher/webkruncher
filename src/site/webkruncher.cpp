@@ -30,84 +30,62 @@
 #include <webkruncher.h>
 #include <db/auth/infoxmlauth.h>
 #include <db/site/infodataservice.h>
+#include <exexml.h>
+#include <db/site/PostProcessor.h>
 
 	const string ServiceName( "WebKruncher" );
-	struct DataResource : InfoDataService::Resource
-	{
-		DataResource( const InfoKruncher::Responder& _responder, InfoDataService::VisitorBase& _visitor  ) 
-			: 
-				Resource( _responder ), 
-				visitor( _visitor )
-		{}
-		virtual operator int ();
-		protected:
-		InfoDataService::VisitorBase& visitor;
-	};
-	
-	DataResource::operator int ()
-	{
-		const bool IsDefault( responder.IsDefault() );
-		uri= ( IsDefault  ? "index.html" : string(".") + responder.resource );
-		contenttype=( Hyper::ContentType( uri ) );
-		if ( ! CookieCheck( IsDefault, visitor ) )  return HttpError( 422 );
-		const string filename( responder.options.path + uri );
-		if ( ! FileExists( filename ) ) return HttpError( 404 );
-		stringstream sfile;
-		LoadFile( filename.c_str(), sfile );
-		if ( contenttype == "text/html" )
-		{
-			Hyper::JavaScripter js(responder.options.path );
-			js.split( sfile.str(), "\n" );
-			if ( ! js ) payload << sfile.str();
-			else payload << js;
-		} else 
-			payload<<sfile.str();
-		return 0;
-	}
 
-	string WebKruncher::LoadResponse( InfoKruncher::Responder& r  )
+	InfoKruncher::RestResponse* InfoSite::LoadResponse( InfoKruncher::Responder& r  )
 	{
 		DbRecords::RecordSet<InfoDataService::Visitor> records;
 		records+=r;
 
-		DataResource Payload( r, records );
-		HttpStatus = Payload;
-		if ( HttpStatus ) 
+		const string ipaddr( dotted( r.ipaddr ) );
+		const char* cInfoTestIp( getenv( "INFO_TEST_IP" ) );
+		if ( cInfoTestIp )
 		{
-			InfoKruncher::RestResponse respond( HttpStatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
-			return respond;
+			const string InfoTestIp( cInfoTestIp );
+			Log( "INFO_TEST_IP", ipaddr + string("?" ) +  InfoTestIp );
+			if ( ipaddr!=InfoTestIp )
+			{
+				const string filename( r.options.path + string( "UnderConstruction.html" ) );
+				if ( ! FileExists( filename ) ) return new InfoKruncher::RestResponse( 404 , "text/html" , ServiceName, false, "", "", "<html>Not Found</html>" );
+				stringstream sfile;
+				LoadFile( filename.c_str(), sfile );
+				return new InfoKruncher::RestResponse( 401 , "text/html" , ServiceName, false, "", "", sfile.str() );
+			}
 		}
 
-		const string& uri( Payload.uri );
-		HttpStatus=200;
+		InfoDataService::DataResource Payload( r, records );
+		const int payloadstatus( Payload );
+		if ( payloadstatus ) 
+			return new InfoKruncher::RestResponse( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 
 		if ( r.method == "POST" )
-		{
-			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 2048 ) )
-			{
-				Log( "Content length too big" );
-				HttpStatus=414;
-				InfoKruncher::RestResponse respond( HttpStatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
-				return respond;
-			} 
-		}
+			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 4096 ) )
+				return new InfoKruncher::RestResponse( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 
-		InfoDb::Site::Roles roles( r.options.protocol, uri, r.headers, r.ipaddr, r.options.text );	
-
-		const string& contenttype( Payload.contenttype );
-		const stringstream& ss( Payload.payload );
-		
-		InfoAuth::Authorization auth( ss.str(), contenttype, roles );
-
-		const string& Text( auth );
-		HttpStatus=auth;
-
-		InfoKruncher::RestResponse respond( HttpStatus, contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), Text );
-		return respond;
-
+		InfoDb::Site::Roles roles( r.options.protocol, Payload.uri, r.headers, r.ipaddr, r.options.text );	
+		InfoAuth::Authorization auth( Payload.payload.str(), Payload.contenttype, roles );
+		const int AuthorizationStatus( auth );
+		return new InfoKruncher::RestResponse( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
 	}
 
-	void WebKruncher::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
-		{ usleep( (rand()%10)+20 ); }
+	bool InfoSite::ProcessForm( const string formpath, stringmap& formdata )
+	{
+		stringstream ssmsg;  ssmsg << "InfoSite::ProcessForm" << fence << formpath << fence << formdata;
+		Log( ssmsg.str() );
+		return true;
+	}
 
+	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent ) 
+	{
+		stringmap formdata;
+		PostProcessingXml::PostedXml xml( formdata, *this );
+		//xml.Load( (char*)PostedContent.c_str() );
+		//if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
+	}
+
+	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
+		{ usleep( (rand()%10)+20 ); }
 

@@ -43,10 +43,12 @@
 
 	inline ostream& operator<<(ostream& o,const ServiceList & m) { return m.operator<<(o); }
 
-	struct WebKruncher : InfoKruncher::Site
+	struct InfoSite : InfoKruncher::Site
 	{
-		virtual string LoadResponse( InfoKruncher::Responder& );
+		virtual InfoKruncher::RestResponse* LoadResponse( InfoKruncher::Responder& ); 
 		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
+		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent );
+		virtual bool ProcessForm( const string, stringmap& );
 	};
 
 #endif //WEBKRUNCHER_WEBSITE_H

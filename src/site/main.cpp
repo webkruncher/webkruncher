@@ -31,18 +31,29 @@
 #include <webkruncher.h>
 
 
+
 namespace InfoKruncher
 {
+	struct DbSite : InfoSite
+	{
+		bool ProcessForm( const string formpath, stringmap& formdata )
+		{
+			stringstream ssmsg;  ssmsg << "DbSite" << fence << formpath << fence << formdata;
+			Log( ssmsg.str() );
+			return true;
+		}
+		void PostProcessing( InfoKruncher::Responder& responder, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent ) 
+		{
+			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent );
+		}
+	};
 	template<> 
-		void InfoKruncher::Service< WebKruncher >::ForkAndServe( const SocketProcessOptions& svcoptions )
+		void InfoKruncher::Service< InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )
 	{
 		RunService( svcoptions );
 	}
-	template<> void InfoKruncher::Service< WebKruncher >::Terminate() { subprocesses.Terminate(); }
+	template<> void InfoKruncher::Service< InfoSite >::Terminate() { subprocesses.Terminate(); }
 } // InfoKruncher
-
-//struct Sites : vector< InfoKruncher::Service<WebKruncher> > { void Terminate(); };
-//void Sites::Terminate() { for ( iterator it=begin(); it!=end(); it++ ) it->Terminate(); }
 
 
 
@@ -68,11 +79,11 @@ int main( int argc, char** argv )
 		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
 
-		InfoKruncher::Service<WebKruncher> sites[ nSites ];
+		InfoKruncher::Service<InfoSite> sites[ nSites ];
 
 		for ( size_t c=0;  c < nSites; c++ )
 		{
-			InfoKruncher::Service<WebKruncher>& site( sites[ c ] );
+			InfoKruncher::Service<InfoSite>& site( sites[ c ] );
 			const InfoKruncher::SocketProcessOptions& svcoptions( workerlist[ c ] );
 			site.ForkAndServe( svcoptions);
 		}
