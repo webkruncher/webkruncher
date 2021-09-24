@@ -35,7 +35,7 @@ if [ "${1}" == "-run" ]; then
 	shift
 	sudo pkill webkruncher
 	sleep 2
-	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --filter `hostname`
+	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter `hostname`
 fi
 
 if [ "${1}" == "-install" ]; then 

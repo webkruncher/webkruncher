@@ -43,20 +43,20 @@ namespace ServiceXml
 		virtual XmlNodeBase* NewNode(Xml& _doc,XmlNodeBase* parent,stringtype name ) const
 		{ 
 			XmlNodeBase* ret(NULL);
-			ret=new Item(_doc,parent,name,servicelist, filter); 
+			ret=new Item(_doc,parent,name,servicelist, optionnode, filter); 
 			Item& n( static_cast<Item&>(*(ret)) );
 			n.SetTabLevel( __tablevel+1 );
 			return ret;
 		}
 
 		virtual bool operator()(ostream& o) { return XmlNode::operator()(o); }
-		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist, const string _filter ) 
-			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), filter( _filter )  {}
+		Item(Xml& _doc,const XmlNodeBase* _parent,stringtype _name, ServiceList& _servicelist, const string _optionnode, const string _filter ) 
+			: XmlNode(_doc,_parent,_name ), servicelist( _servicelist ), optionnode( _optionnode ), filter( _filter )  {}
 		operator bool () 
 		{
 			Load( NodeOptions );
 			if ( Filtered() ) return true;
-			if ( name == "site" ) 
+			if ( name == optionnode )
 			{
 				InfoKruncher::SocketProcessOptions o;
 				Load( o );
@@ -100,13 +100,15 @@ namespace ServiceXml
 		}
 		ServiceList& servicelist;
 		InfoKruncher::SocketProcessOptions NodeOptions;
+		const string optionnode;
 		const string filter;
 	};
 
 	struct Configuration : Xml
 	{
-		Configuration( ServiceList& _servicelist, const string _filter ) : servicelist( _servicelist ), filter( _filter ) {}
-		virtual XmlNode* NewNode(Xml& _doc,stringtype name) const { return new Item(_doc,NULL,name, servicelist, filter ); } 
+		Configuration( ServiceList& _servicelist, const string _optionnode, const string _filter ) 
+			: servicelist( _servicelist ), optionnode( _optionnode ), filter( _filter ) {}
+		virtual XmlNode* NewNode(Xml& _doc,stringtype name) const { return new Item(_doc,NULL,name, servicelist, optionnode, filter ); } 
 		ostream& operator<<(ostream& o) const 
 		{
 			if ( ! Root ) return o;
@@ -123,6 +125,7 @@ namespace ServiceXml
 		}
 		private:
 		ServiceList& servicelist;
+		const string optionnode;
 		const string filter;
 	};
 	inline ostream& operator<<(ostream& o,Configuration& xml){return xml.operator<<(o);}
@@ -135,8 +138,13 @@ namespace ServiceXml
 		{
 			KruncherTools::Args::const_iterator filterit( options.find( "--filter" ) );
 			if ( filterit == options.end() ) throw string( "Use of --xml requires --filter option" );
+			KruncherTools::Args::const_iterator nodeit( options.find( "--node" ) );
+			if ( nodeit == options.end() ) throw string( "Use of --xml requires --node option" );
+			const string optionnode( nodeit->second );
+
+			Log("Loading", optionnode );
 			
-			ServiceXml::Configuration xml( *this, filterit->second );
+			ServiceXml::Configuration xml( *this, optionnode, filterit->second );
 			const string xmltxt( LoadFile( xmlname->second ) );
 			if ( xmltxt.empty() ) return false;
 			xml.Load( (char*)xmltxt.c_str() );
@@ -146,40 +154,7 @@ namespace ServiceXml
 			return true;
 		}
 			
-		if ( options.find( "--http" ) != options.end() )
-		{
-			InfoKruncher::SocketProcessOptions o;
-			o.port=80;
-			o.protocol=InfoKruncher::http;
-			o.path="/home/jmt/websites/text/webkruncher/";
-			push_back( o );
-		}
-
-		if ( options.find( "--https" ) != options.end() )
-		{
-			SecureInformation::init_openssl();
-			InfoKruncher::SocketProcessOptions o;
-			o.port=443;
-			o.protocol=InfoKruncher::https;
-			o.path="/home/jmt/websites/text/webkruncher/";
-
-			const string passwordfile( "/etc/webkruncher.pwd" );
-			if ( KruncherTools::FileExists( passwordfile ) )
-			{
-				o.keypasswd=KruncherTools::LoadFile( passwordfile );
-			} else {
-				cout << "Ssl Password: ";
-				o.keypasswd=KruncherTools::getpass();
-			}
-
-			const string certs( "/etc/certs/webkruncher/" );
-			o.cadir=certs;
-			o.certfile=certs+string("WEBKRUNCHER.COM.crt");
-			o.cafile=certs+string("dv_chain.txt");
-			o.keyfile=certs+string("server.key");
-			push_back( o );
-		}
-		return true;
+		return false;
 	}
 
 
