@@ -32,6 +32,7 @@
 #include <db/site/infodataservice.h>
 #include <exexml.h>
 #include <db/site/PostProcessor.h>
+#include <db/site/infofigur.h>
 
 	const string ServiceName( "WebKruncher" );
 

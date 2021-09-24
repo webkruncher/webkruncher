@@ -29,6 +29,7 @@
 #include <infokruncher.h>
 #include <infosite.h>
 #include <webkruncher.h>
+#include <db/site/infodataservice.h>
 
 
 
@@ -63,10 +64,10 @@ int main( int argc, char** argv )
 	try
 	{
 		Initialize();
-		InfoKruncher::Options< ServiceList > options( argc, argv );
+		InfoKruncher::Options< InfoDataService::ServiceList > options( argc, argv );
 		if ( ! options ) throw string( "Invalid options" );
 
-		const ServiceList& workerlist( options.workerlist );
+		const InfoDataService::ServiceList& workerlist( options.workerlist );
 
 		const size_t nSites( options.workerlist.size() );
 
