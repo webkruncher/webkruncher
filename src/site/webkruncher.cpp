@@ -41,35 +41,22 @@
 		DbRecords::RecordSet<InfoDataService::Visitor> records;
 		records+=r;
 
-		const string ipaddr( dotted( r.ipaddr ) );
-		const char* cInfoTestIp( getenv( "INFO_TEST_IP" ) );
-		if ( cInfoTestIp )
-		{
-			const string InfoTestIp( cInfoTestIp );
-			Log( "INFO_TEST_IP", ipaddr + string("?" ) +  InfoTestIp );
-			if ( ipaddr!=InfoTestIp )
-			{
-				const string filename( r.options.path + string( "UnderConstruction.html" ) );
-				if ( ! FileExists( filename ) ) return new InfoKruncher::RestResponse( 404 , "text/html" , ServiceName, false, "", "", "<html>Not Found</html>" );
-				stringstream sfile;
-				LoadFile( filename.c_str(), sfile );
-				return new InfoKruncher::RestResponse( 401 , "text/html" , ServiceName, false, "", "", sfile.str() );
-			}
-		}
-
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
 		if ( payloadstatus ) 
-			return new InfoKruncher::RestResponse( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			return new InfoKruncher::RestResponse
+				( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 
 		if ( r.method == "POST" )
 			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 4096 ) )
-				return new InfoKruncher::RestResponse( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+				return new InfoKruncher::RestResponse
+					( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 
 		InfoDb::Site::Roles roles( r.options.protocol, Payload.uri, r.headers, r.ipaddr, r.options.text );	
 		InfoAuth::Authorization auth( Payload.payload.str(), Payload.contenttype, roles );
 		const int AuthorizationStatus( auth );
-		return new InfoKruncher::RestResponse( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
+		return new InfoKruncher::RestResponse
+			( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
 	}
 
 	bool InfoSite::ProcessForm( const string formpath, stringmap& formdata )
@@ -83,8 +70,8 @@
 	{
 		stringmap formdata;
 		PostProcessingXml::PostedXml xml( formdata, *this );
-		//xml.Load( (char*)PostedContent.c_str() );
-		//if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
+		xml.Load( (char*)PostedContent.c_str() );
+		if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
