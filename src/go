@@ -1,8 +1,14 @@
 
+. ../../krunchercore/Builder.ksh
 OStag=`uname -a | cut -d ' ' -f1`
 [ ${OStag} == "Linux" ] && export OS=LINUX
 [ ${OStag} == "OpenBSD" ] && export OS=UNIX
 
+
+if [ "${1}" == "-clean" ]; then
+	shift
+	sudo rm -rf ../src.build
+fi
 
 if [ "${1}" == "-rebuild" ]; then
 	shift
@@ -10,7 +16,6 @@ if [ "${1}" == "-rebuild" ]; then
 	pushd ~/Info/informationkruncher/src
 	sudo rm -rf ../src.build
 	./go
-	sudo ./go -install
 	popd
 fi
 
@@ -19,10 +24,10 @@ echo -ne "\033[32mBuilding WebKruncher for ${OS}\033[0m\n"
 if [ ! -d ../src.build ]; then
 	mkdir -p ../src.build
 	cmake  -S . -B ../src.build/  
-	[ $? != 0 ] && exit -1
+	[ $? != 0 ] && ShowBuild && exit -1
 fi
 cmake  --build ../src.build/ 
-[ $? != 0 ] && exit -1
+[ $? != 0 ] && ShowBuild && exit -1
 
 if [ "${1}" == "-test" ]; then
 	shift

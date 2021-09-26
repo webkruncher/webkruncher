@@ -1,7 +1,19 @@
 
-set(CMAKE_CXX_FLAGS "  -pthread " )
+set(INCLUDE_PATHS)
+IncludeProjects(
+	krunchercore/src/include
+	exexml/include
+	informationkruncher/src/include
+	informationkruncher/src/include/db
+)
 
-get_filename_component(INCLUDES_PATH ../include/ REALPATH) 
+set(LIBRARY_PATHS)
+set(LIBRARIES)
+IncludeLibraryPaths(
+	krunchercore
+	informationkruncher
+)
+
 
 add_executable(
 	webkruncher
@@ -9,11 +21,11 @@ add_executable(
 		webkruncher.cpp
 )
 
-#add_library( kruncher::webkruncher  ALIAS webkruncher  )
 
 target_include_directories(
     webkruncher
 	    PRIVATE
+		../include/
 		${INCLUDE_PATHS}
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
@@ -28,12 +40,10 @@ target_link_directories(
 target_link_libraries(
     webkruncher
 	    PUBLIC
-			${LIBRARIES}
-			kruncher::headers
-			auth
-			site
-			records
-			/home/jmt/libdb/build_unix/libdb_cxx.a
+		${LIBRARIES}
+		ssl
+		crypto
+		/home/jmt/libdb/build_unix/libdb_cxx.a
 )
 
 install(
