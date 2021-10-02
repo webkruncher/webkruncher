@@ -1,12 +1,14 @@
 
+
+
 set(INCLUDE_PATHS)
 IncludeProjects(
 	krunchercore/src/include
 	exexml/include
+	datakruncher/src/include
 	informationkruncher/src/include
 	informationkruncher/src/include/db
 )
-
 set(LIBRARY_PATHS)
 set(LIBRARIES)
 IncludeLibraryPaths(
@@ -25,8 +27,9 @@ add_executable(
 target_include_directories(
     webkruncher
 	    PRIVATE
-		../include/
 		${INCLUDE_PATHS}
+		../include/
+		/home/jmt/libdb/build_unix
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 		$<INSTALL_INTERFACE:include>
 )

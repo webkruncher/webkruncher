@@ -29,6 +29,7 @@
 #include <infosite.h>
 #include <webkruncher.h>
 #include <db/auth/infoxmlauth.h>
+#include <visitors/visitor.h>
 #include <db/site/infodataservice.h>
 #include <exexml.h>
 #include <db/site/PostProcessor.h>
@@ -38,8 +39,8 @@
 
 	InfoKruncher::RestResponse* InfoSite::LoadResponse( InfoKruncher::Responder& r  )
 	{
-		DbRecords::RecordSet<InfoDataService::Visitor> records;
-		records+=r;
+		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
+		//records+=r;
 
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
