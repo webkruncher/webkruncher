@@ -64,9 +64,9 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		Initialize();
 		InfoKruncher::Options< InfoDataService::ServiceList > options( argc, argv );
 		if ( ! options ) throw string( "Invalid options" );
+		if ( options.find( "-d" ) == options.end() ) Initialize();
 
 		const InfoDataService::ServiceList& workerlist( options.workerlist );
 
