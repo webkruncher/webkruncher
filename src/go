@@ -47,7 +47,7 @@ if [ "${1}" == "-install" ]; then
 	shift
 	sudo pkill webkruncher
 	sleep 1
-	cmake --install ../src.build
+	sudo cmake --install ../src.build
 fi
 
 
