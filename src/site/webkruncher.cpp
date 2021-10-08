@@ -76,5 +76,5 @@
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
-		{ usleep( (rand()%10)+20 ); }
+		{ usleep( (rand()%100)+20000 ); }
 
