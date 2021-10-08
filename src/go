@@ -24,8 +24,8 @@ if [ "${1}" == "-testrun" ]; then
 	cd $1
 	shift
 	#export INFO_TEST_IP=73.201.184.88 
-	echo "../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.st.xml  --node data --filter `hostname` "
-	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.st.xml  --node data --filter `hostname` 
+	echo "../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.st.xml  --node site --filter jackmthompson.ninja"
+	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.st.xml  --node site --filter jackmthompson.ninja
 	exit
 fi
 
@@ -62,16 +62,16 @@ cmake  --build ../src.build/
 
 if [ "${1}" == "-test" ]; then
 	shift
-	../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter `hostname`
-	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter "webkruncher.com"
-	#../src.build/site/webkruncher -d --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter noname
+	../src.build/site/webkruncher -d --node site --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter jackmthompson.ninja
+	#../src.build/site/webkruncher -d --node site --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter "webkruncher.com"
+	#../src.build/site/webkruncher -d --node site --xml /home/jmt/websites/sites/webkruncher.xml --check-config --filter noname
 fi
 
 if [ "${1}" == "-run" ]; then
 	shift
 	sudo pkill webkruncher
 	sleep 2
-	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter `hostname`
+	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter jackmthompson.ninja
 fi
 
 if [ "${1}" == "-install" ]; then 
