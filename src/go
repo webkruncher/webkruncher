@@ -15,7 +15,7 @@ if [ "${1}" == "-rebuild" ]; then
 	sudo rm -rf ../src.build
 	pushd ~/Info/informationkruncher/src
 	sudo rm -rf ../src.build
-	./go
+	./go -install
 	popd
 fi
 
