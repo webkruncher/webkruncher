@@ -28,6 +28,8 @@
 
 #include <infokruncher.h>
 #include <infosite.h>
+#include <exexml.h>
+#include <infofigur.h>
 #include <webkruncher.h>
 #include <db/site/infodataservice.h>
 
@@ -49,11 +51,11 @@ namespace InfoKruncher
 		}
 	};
 	template<> 
-		void InfoKruncher::Service< InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )
+		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )
 	{
 		RunService( svcoptions );
 	}
-	template<> void InfoKruncher::Service< InfoSite >::Terminate() { subprocesses.Terminate(); }
+	template<> void InfoKruncher::Service< WebKruncherService::InfoSite >::Terminate() { subprocesses.Terminate(); }
 } // InfoKruncher
 
 
@@ -64,11 +66,11 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		InfoKruncher::Options< InfoDataService::ServiceList > options( argc, argv );
+		InfoKruncher::Options< InfoKruncher::ServiceList > options( argc, argv );
 		if ( ! options ) throw string( "Invalid options" );
 		if ( options.find( "-d" ) == options.end() ) Initialize();
 
-		const InfoDataService::ServiceList& workerlist( options.workerlist );
+		const InfoKruncher::ServiceList& workerlist( options.workerlist );
 
 		const size_t nSites( options.workerlist.size() );
 
@@ -81,11 +83,11 @@ int main( int argc, char** argv )
 		cerr << yellow << "webkruncher is starting up" << normal << endl;
 		KruncherTools::Daemonizer daemon( options.daemonize, "WebKruncher" );
 
-		InfoKruncher::Service<InfoSite> sites[ nSites ];
+		InfoKruncher::Service<WebKruncherService::InfoSite> sites[ nSites ];
 
 		for ( size_t c=0;  c < nSites; c++ )
 		{
-			InfoKruncher::Service<InfoSite>& site( sites[ c ] );
+			InfoKruncher::Service<WebKruncherService::InfoSite>& site( sites[ c ] );
 			const InfoKruncher::SocketProcessOptions& svcoptions( workerlist[ c ] );
 			site.ForkAndServe( svcoptions);
 		}

@@ -28,7 +28,8 @@
 
 #ifndef WEBKRUNCHER_WEBSITE_H
 #define WEBKRUNCHER_WEBSITE_H
-
+namespace WebKruncherService
+{
 	struct InfoSite : InfoKruncher::Site
 	{
 		virtual InfoKruncher::RestResponse* LoadResponse( InfoKruncher::Responder& ); 
@@ -36,7 +37,7 @@
 		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent );
 		virtual bool ProcessForm( const string, stringmap& );
 	};
-
+} // WebKruncherService
 #endif //WEBKRUNCHER_WEBSITE_H
 
 

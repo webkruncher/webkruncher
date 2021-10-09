@@ -33,8 +33,10 @@
 #include <db/site/infodataservice.h>
 #include <exexml.h>
 #include <db/site/PostProcessor.h>
-#include <db/site/infofigur.h>
+#include <infofigur.h>
 
+namespace WebKruncherService
+{
 	const string ServiceName( "WebKruncher" );
 
 	InfoKruncher::RestResponse* InfoSite::LoadResponse( InfoKruncher::Responder& r  )
@@ -77,4 +79,5 @@
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
 		{ usleep( (rand()%100)+20000 ); }
+} // WebKruncherService
 
