@@ -53,9 +53,12 @@ namespace WebKruncherService
 			return ;
 		}
 
-		if ( Payload.data )
+		if ( Payload.IsBinary() )
 		{
-			Log( VERB_ALWAYS, Payload.uri, "Binary data" );
+			stringstream ss;
+			ss << "Binary length:" << Payload.DataLength() ;
+			Log( VERB_ALWAYS, Payload.uri, ss.str() );
+			Responder( 200, Payload.contenttype, ServiceName, false, "", "", Payload.Data(), Payload.DataLength() );
 			return ;
 		}
 
