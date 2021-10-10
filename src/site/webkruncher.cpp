@@ -43,23 +43,37 @@ namespace WebKruncherService
 	{
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
 		//records+=r;
+		InfoKruncher::RestResponse* pResponder( new InfoKruncher::RestResponse );
+		InfoKruncher::RestResponse& Responder( *pResponder );
+
+	
 
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
 		if ( payloadstatus ) 
-			return new InfoKruncher::RestResponse
-				( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+		{
+			Responder( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			return pResponder;
+		}
 
-		if ( r.method == "POST" )
+		if ( Payload.data )
+		{
+			Log( VERB_ALWAYS, Payload.uri, "Binary data" );
+			return NULL;
+		}
+
+		if ( ( r.method == "POST" ) || ( r.method == "PUT" ) || ( r.method == "PATCH" ) )
 			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 4096 ) )
-				return new InfoKruncher::RestResponse
-					( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+			{
+				Responder( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+				return pResponder;
+			}
 
 		InfoDb::Site::Roles roles( r.options.protocol, Payload.uri, r.headers, r.ipaddr, r.options.text );	
 		InfoAuth::Authorization auth( Payload.payload.str(), Payload.contenttype, roles );
 		const int AuthorizationStatus( auth );
-		return new InfoKruncher::RestResponse
-			( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
+		Responder( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
+		return pResponder;
 	}
 
 	bool InfoSite::ProcessForm( const string formpath, stringmap& formdata )
