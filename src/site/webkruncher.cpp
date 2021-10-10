@@ -39,13 +39,10 @@ namespace WebKruncherService
 {
 	const string ServiceName( "WebKruncher" );
 
-	InfoKruncher::RestResponse* InfoSite::LoadResponse( InfoKruncher::Responder& r  )
+	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
 		//records+=r;
-		InfoKruncher::RestResponse* pResponder( new InfoKruncher::RestResponse );
-		InfoKruncher::RestResponse& Responder( *pResponder );
-
 	
 
 		InfoDataService::DataResource Payload( r, records );
@@ -53,27 +50,27 @@ namespace WebKruncherService
 		if ( payloadstatus ) 
 		{
 			Responder( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
-			return pResponder;
+			return ;
 		}
 
 		if ( Payload.data )
 		{
 			Log( VERB_ALWAYS, Payload.uri, "Binary data" );
-			return NULL;
+			return ;
 		}
 
 		if ( ( r.method == "POST" ) || ( r.method == "PUT" ) || ( r.method == "PATCH" ) )
 			if ( ( r.ContentLength < 0 ) || ( r.ContentLength > 4096 ) )
 			{
 				Responder( 414, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
-				return pResponder;
+				return ;
 			}
 
 		InfoDb::Site::Roles roles( r.options.protocol, Payload.uri, r.headers, r.ipaddr, r.options.text );	
 		InfoAuth::Authorization auth( Payload.payload.str(), Payload.contenttype, roles );
 		const int AuthorizationStatus( auth );
 		Responder( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
-		return pResponder;
+		return ;
 	}
 
 	bool InfoSite::ProcessForm( const string formpath, stringmap& formdata )
