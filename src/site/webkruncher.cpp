@@ -41,6 +41,7 @@ namespace WebKruncherService
 
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
+		Log( VERB_ALWAYS, "LoadResponse", r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
 		//records+=r;
 	
