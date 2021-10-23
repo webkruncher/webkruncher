@@ -4,7 +4,7 @@
 set(INCLUDE_PATHS)
 IncludeProjects(
 	krunchercore/src/include
-	exexml/include
+	exexml/src/include
 	datakruncher/src/include
 	informationkruncher/src/include
 	informationkruncher/src/include/db
