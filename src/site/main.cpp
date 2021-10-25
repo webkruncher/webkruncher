@@ -91,7 +91,7 @@ int main( int argc, char** argv )
 			const InfoKruncher::SocketProcessOptions& svcoptions( workerlist[ c ] );
 			site.ForkAndServe( svcoptions);
 		}
-		while ( !TERMINATE ) usleep( (rand()%100000)+100000 );
+		while ( !TERMINATE ) sleep( 1 );
 		Log( "webkruncher is exiting" );
 		for ( size_t t=0; t < nSites; t++ ) sites[ t ].Terminate();
 	}

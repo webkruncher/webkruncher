@@ -93,6 +93,6 @@ namespace WebKruncherService
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
-		{ usleep( (rand()%100)+20000 ); }
+		{ usleep( 100000 ); }
 } // WebKruncherService
 
