@@ -41,8 +41,8 @@ namespace WebKruncherService
 
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
-		const string proto( ( r.options.protocol == InfoKruncher::http ) ? "http" : "https" );
-		Log( VERB_ALWAYS, "LoadResponse", proto + string("|") + r.resource );
+		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
+		Log( VERB_ALWAYS, "LoadResponse", schemer + string("|") + r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
 		//records+=r;
 	
@@ -71,7 +71,7 @@ namespace WebKruncherService
 				return ;
 			}
 
-		InfoDb::Site::Roles roles( r.options.protocol, Payload.uri, r.headers, r.ipaddr, r.options.text );	
+		InfoDb::Site::Roles roles( r.options.scheme, Payload.uri, r.headers, r.ipaddr, r.options.text );	
 		InfoAuth::Authorization auth( Payload.payload.str(), Payload.contenttype, roles );
 		const int AuthorizationStatus( auth );
 		Responder( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), auth );
