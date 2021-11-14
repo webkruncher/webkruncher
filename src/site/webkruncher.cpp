@@ -42,10 +42,17 @@ namespace WebKruncherService
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
-		Log( VERB_ALWAYS, "LoadResponse", schemer + string("|") + r.resource );
+		Log( VERB_ALWAYS, "InfoSite::LoadResponse", schemer + string("|") + r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
 		//records+=r;
-	
+
+
+		if ( r.resource == "/yaisdfsaifj" )
+		{
+			{ofstream o( "/home/jmt/hists.txt", ios::app ); o << r.method << fence << r.resource << endl; }	
+			Responder( 200, "text/plain", ServiceName, false, "", "", "Tester" );
+			return;
+		}
 
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
@@ -85,8 +92,9 @@ namespace WebKruncherService
 		return true;
 	}
 
-	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent ) 
+	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent ) 
 	{
+		Log( VERB_ALWAYS, "InfoSite::PostProcessing", (char*) PostedContent.data() );
 		stringmap formdata;
 		PostProcessingXml::PostedXml xml( formdata, *this );
 		xml.Load( (char*)PostedContent.c_str() );

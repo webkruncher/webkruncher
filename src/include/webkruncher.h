@@ -34,7 +34,7 @@ namespace WebKruncherService
 	{
 		virtual void LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder );
 		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
-		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent );
+		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent );
 		virtual bool ProcessForm( const string, stringmap& );
 	};
 } // WebKruncherService

@@ -52,6 +52,7 @@ fi
 
 
 echo -ne "\033[32mBuilding WebKruncher for ${OS}\033[0m\n"
+rm -rf ../src.build
 if [ ! -d ../src.build ]; then
 	mkdir -p ../src.build
 	cmake  -S . -B ../src.build/  
@@ -69,6 +70,8 @@ fi
 
 if [ "${1}" == "-run" ]; then
 	shift
+	sudo pkill webkruncher
+	sleep 2
 	sudo pkill webkruncher
 	sleep 2
 	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter jackmthompson.ninja
