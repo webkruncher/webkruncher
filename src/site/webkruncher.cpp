@@ -47,13 +47,15 @@ namespace WebKruncherService
 		//records+=r;
 
 
+#if 1		
+		{ofstream o( "/home/jmt/hists.txt", ios::app ); o << r.method << fence << r.resource << endl << r.headers << endl << endl; }	
 		if ( r.resource == "/yaisdfsaifj" )
 		{
 			{ofstream o( "/home/jmt/hists.txt", ios::app ); o << r.method << fence << r.resource << endl; }	
 			Responder( 200, "text/plain", ServiceName, false, "", "", "Tester" );
 			return;
 		}
-
+#endif
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
 		if ( payloadstatus ) 
@@ -94,11 +96,15 @@ namespace WebKruncherService
 
 	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent ) 
 	{
+		{ofstream o( "/home/jmt/hists.txt", ios::app ); o << "POSTED:" << endl << (char*) PostedContent.data() << endl; }
+
 		Log( VERB_ALWAYS, "InfoSite::PostProcessing", (char*) PostedContent.data() );
+		#if 0
 		stringmap formdata;
 		PostProcessingXml::PostedXml xml( formdata, *this );
 		xml.Load( (char*)PostedContent.c_str() );
 		if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
+		#endif
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
