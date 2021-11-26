@@ -1,20 +1,28 @@
 
 
-
 set(INCLUDE_PATHS)
 IncludeProjects(
-	krunchercore/src/include
-	exexml/src/include
-	datakruncher/src/include
-	informationkruncher/src/include
-	informationkruncher/src/include/db
+	krunchercore
+	exexml
+	datakruncher
+	informationkruncher
+	infodata
+	infodata/auth
+	infodata/records
+	infodata/site
 )
 set(LIBRARY_PATHS)
 set(LIBRARIES)
 IncludeLibraryPaths(
 	krunchercore
+	datakruncher
 	informationkruncher
+	infodata/auth
+	infodata/records
+	infodata/site
 )
+
+
 
 
 add_executable(
@@ -47,6 +55,9 @@ target_link_libraries(
 		ssl
 		crypto
 		/home/jmt/libdb/build_unix/libdb_cxx.a
+		krunchertrace
+		site
+		auth
 )
 
 install(
