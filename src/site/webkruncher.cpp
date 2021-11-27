@@ -44,7 +44,7 @@ namespace WebKruncherService
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
 		Log( VERB_ALWAYS, "InfoSite::LoadResponse", schemer + string("|") + r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
-		records+=r;
+		//records+=r;
 
 
 		InfoDataService::DataResource Payload( r, records );
