@@ -44,18 +44,9 @@ namespace WebKruncherService
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
 		Log( VERB_ALWAYS, "InfoSite::LoadResponse", schemer + string("|") + r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
-		//records+=r;
+		records+=r;
 
 
-#if 1		
-		{ofstream o( "/home/jmt/hists.txt", ios::app ); o << r.method << fence << r.resource << endl << r.headers << endl << endl; }	
-		if ( r.resource == "/yaisdfsaifj" )
-		{
-			{ofstream o( "/home/jmt/hists.txt", ios::app ); o << r.method << fence << r.resource << endl; }	
-			Responder( 200, "text/plain", ServiceName, false, "", "", "Tester" );
-			return;
-		}
-#endif
 		InfoDataService::DataResource Payload( r, records );
 		const int payloadstatus( Payload );
 		if ( payloadstatus ) 
@@ -67,8 +58,6 @@ namespace WebKruncherService
 		if ( Payload.IsBinary() )
 		{
 			stringstream ss;
-			//ss << "Binary length:" << Payload.DataLength() ;
-			//Log( VERB_ALWAYS, Payload.uri, ss.str() );
 			Responder( 200, Payload.contenttype, ServiceName, false, "", "", Payload.Data(), Payload.DataLength() );
 			return ;
 		}
@@ -99,15 +88,15 @@ namespace WebKruncherService
 		{ofstream o( "/home/jmt/hists.txt", ios::app ); o << "POSTED:" << endl << (char*) PostedContent.data() << endl; }
 
 		Log( VERB_ALWAYS, "InfoSite::PostProcessing", (char*) PostedContent.data() );
-		#if 0
+
 		stringmap formdata;
 		PostProcessingXml::PostedXml xml( formdata, *this );
 		xml.Load( (char*)PostedContent.c_str() );
 		if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
-		#endif
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
 		{ usleep( 100000 ); }
+
 } // WebKruncherService
 

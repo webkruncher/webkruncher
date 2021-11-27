@@ -20,7 +20,6 @@ LibraryPaths(
 	krunchercore::ut/Directory/
 	krunchercore::ut/
 	datakruncher::data/
-	datakruncher::data/
 	informationkruncher::socks/
 	infodata::db/auth/
 	infodata::db/records/
