@@ -1,28 +1,43 @@
 
 
-set(INCLUDE_PATHS)
-IncludeProjects(
+
+Headers(
 	krunchercore
 	exexml
 	datakruncher
 	informationkruncher
 	infodata
-	infodata/auth
-	infodata/records
-	infodata/site
+	infodata::db
+	infodata::db/auth
+	infodata::db/records
+	infodata::db/site
 )
-set(LIBRARY_PATHS)
-set(LIBRARIES)
-IncludeLibraryPaths(
+
+
+LibraryPaths(
+	krunchercore::global/tracer/
+	krunchercore::global/
+	krunchercore::ut/Directory/
+	krunchercore::ut/
+	datafactory::data/
+	datafactory::data/
+	informationkruncher::socks/
+	infodata::db/auth/
+	infodata::db/records/
+	infodata::db/site/
+)
+
+
+Libraries(
+	krunchertrace
 	krunchercore
+	datafactory
 	datakruncher
 	informationkruncher
-	infodata/auth
-	infodata/records
-	infodata/site
+	auth
+	records
+	site
 )
-
-
 
 
 add_executable(
@@ -51,13 +66,10 @@ target_link_directories(
 target_link_libraries(
     webkruncher
 	    PUBLIC
-		${LIBRARIES}
 		ssl
 		crypto
 		/home/jmt/libdb/build_unix/libdb_cxx.a
-		krunchertrace
-		site
-		auth
+		${Libraries}
 )
 
 install(

@@ -31,7 +31,7 @@
 #include <exexml.h>
 #include <infofigur.h>
 #include <webkruncher.h>
-#include <db/site/infodataservice.h>
+#include <infodataservice.h>
 
 
 
