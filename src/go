@@ -42,8 +42,8 @@ if [ "${1}" == "-gdb" ]; then
 	echo "child:${child}"
 	echo "press enter to dbg"
 	read ok
-echo "InfoKruncher::ServiceBase::ServeHttps"
-echo "PlainInformation::Socket::getline"
+	echo "InfoKruncher::ServiceBase::ServeHttps"
+	echo "PlainInformation::Socket::getline"
 	sudo gdb ../src.build/site/webkruncher ${child}
 	
 	
@@ -51,7 +51,7 @@ echo "PlainInformation::Socket::getline"
 fi
 
 
-echo -ne "\033[32mBuilding WebKruncher for ${OS}\033[0m\n"
+echo -ne "\033[32mBuilding WebKruncher\033[0m\n"
 rm -rf ../src.build
 if [ ! -d ../src.build ]; then
 	mkdir -p ../src.build
