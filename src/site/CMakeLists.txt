@@ -19,8 +19,8 @@ LibraryPaths(
 	krunchercore::global/
 	krunchercore::ut/Directory/
 	krunchercore::ut/
-	datafactory::data/
-	datafactory::data/
+	datakruncher::data/
+	datakruncher::data/
 	informationkruncher::socks/
 	infodata::db/auth/
 	infodata::db/records/
@@ -69,7 +69,7 @@ target_link_libraries(
 		ssl
 		crypto
 		/home/jmt/libdb/build_unix/libdb_cxx.a
-		${Libraries}
+		${LIBRARIES}
 )
 
 install(
