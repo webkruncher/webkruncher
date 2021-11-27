@@ -89,10 +89,10 @@ namespace WebKruncherService
 
 		Log( VERB_ALWAYS, "InfoSite::PostProcessing", (char*) PostedContent.data() );
 
-		stringmap formdata;
-		PostProcessingXml::PostedXml xml( formdata, *this );
-		xml.Load( (char*)PostedContent.c_str() );
-		if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
+		//stringmap formdata;
+		//PostProcessingXml::PostedXml xml( formdata, *this );
+		//xml.Load( (char*)PostedContent.c_str() );
+		//if ( ! xml ) Log( "InfoSite::PostProcessing", "Form processing failed" );
 	}
 
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
