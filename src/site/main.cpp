@@ -45,7 +45,7 @@ namespace InfoKruncher
 			Log( ssmsg.str() );
 			return true;
 		}
-		void PostProcessing( InfoKruncher::Responder& responder, InfoKruncher::RestResponse& DefaultResponse, const string& PostedContent ) 
+		void PostProcessing( InfoKruncher::Responder& responder, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent ) 
 		{
 			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent );
 		}
