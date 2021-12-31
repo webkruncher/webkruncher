@@ -42,6 +42,7 @@ namespace WebKruncherService
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
 		const string ipaddr( dotted( r.ipaddr ) );
+
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
 		Log( VERB_ALWAYS, "InfoSite::LoadResponse", ipaddr + string( "|" ) + r.method + string( "|" ) + schemer + string("|") + r.resource );
 		DbRecords::RecordSet<InfoDataService::Visitor> records( r.options.datapath );
@@ -52,6 +53,7 @@ namespace WebKruncherService
 		const int payloadstatus( Payload );
 		if ( payloadstatus ) 
 		{
+#if 0
 			if ( ipaddr == "73.201.184.88" )
 			{
 				Log( VERB_ALWAYS, "LoadResponse", "Ok for myself" );
@@ -59,6 +61,9 @@ namespace WebKruncherService
 			} else {
 				Responder( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
 			}
+#else
+				Responder( payloadstatus, Payload.contenttype, ServiceName, false, "", "", Payload.payload.str() );
+#endif
 			return ;
 		}
 
