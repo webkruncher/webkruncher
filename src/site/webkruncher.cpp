@@ -42,6 +42,7 @@ namespace WebKruncherService
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
 		const string ipaddr( dotted( r.ipaddr ) );
+		cerr << ipaddr << endl;
 
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
 		Log( VERB_ALWAYS, "InfoSite::LoadResponse", ipaddr + string( "|" ) + r.method + string( "|" ) + schemer + string("|") + r.resource );
