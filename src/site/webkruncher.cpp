@@ -41,6 +41,7 @@ namespace WebKruncherService
 
 	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
 	{
+		if ( r.resource.size() > 512 ) return;
 		const string ipaddr( dotted( r.ipaddr ) );
 		cerr << ipaddr << endl;
 
