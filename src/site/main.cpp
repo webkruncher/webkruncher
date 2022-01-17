@@ -45,9 +45,9 @@ namespace InfoKruncher
 			Log( ssmsg.str() );
 			return true;
 		}
-		void PostProcessing( InfoKruncher::Responder& responder, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent ) 
+		void PostProcessing( InfoKruncher::Responder& responder, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent, InfoKruncher::ThreadLocalBase& threadlocal ) 
 		{
-			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent );
+			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent, threadlocal );
 		}
 #if 0
 		InfoKruncher::ThreadLocalBase* AllocateThreadLocal()

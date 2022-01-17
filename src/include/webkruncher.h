@@ -32,9 +32,9 @@ namespace WebKruncherService
 {
 	struct InfoSite : InfoKruncher::Site
 	{
-		virtual void LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder );
+		virtual void LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder, InfoKruncher::ThreadLocalBase&  );
 		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
-		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent );
+		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent, InfoKruncher::ThreadLocalBase&  );
 		virtual bool ProcessForm( const string, stringmap& );
 		private:
 		virtual InfoKruncher::ThreadLocalBase* AllocateThreadLocal();

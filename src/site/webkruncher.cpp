@@ -39,7 +39,7 @@ namespace WebKruncherService
 {
 	const string ServiceName( "WebKruncher" );
 
-	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder )
+	void InfoSite::LoadResponse( InfoKruncher::Responder& r, InfoKruncher::RestResponse& Responder, InfoKruncher::ThreadLocalBase& threadlocal )
 	{
 		if ( r.resource.size() > 512 ) return;
 		const string ipaddr( dotted( r.ipaddr ) );
@@ -99,7 +99,7 @@ namespace WebKruncherService
 		return true;
 	}
 
-	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent ) 
+	void InfoSite::PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent, InfoKruncher::ThreadLocalBase& threadlocal ) 
 	{
 		{ofstream o( "/home/jmt/hists.txt", ios::app ); o << "POSTED:" << endl << (char*) PostedContent.data() << endl; }
 
