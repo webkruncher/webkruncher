@@ -36,6 +36,8 @@ namespace WebKruncherService
 		virtual void Throttle( const InfoKruncher::SocketProcessOptions& );
 		virtual void PostProcessing( InfoKruncher::Responder&, InfoKruncher::RestResponse& DefaultResponse, const binarystring& PostedContent );
 		virtual bool ProcessForm( const string, stringmap& );
+		private:
+		virtual InfoKruncher::ThreadLocalBase* AllocateThreadLocal();
 	};
 } // WebKruncherService
 #endif //WEBKRUNCHER_WEBSITE_H

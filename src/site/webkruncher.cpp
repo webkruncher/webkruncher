@@ -114,5 +114,15 @@ namespace WebKruncherService
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
 		{ usleep( 100000 ); }
 
+        struct TL {};
+        struct ThreadLocal : InfoKruncher::ThreadLocalStorage< TL > {};
+
+
+	InfoKruncher::ThreadLocalBase* InfoSite::AllocateThreadLocal()
+	{
+		//cerr << "T"; cerr.flush();
+		return new ThreadLocal();
+	}
+
 } // WebKruncherService
 
