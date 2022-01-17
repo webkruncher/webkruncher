@@ -49,12 +49,6 @@ namespace InfoKruncher
 		{
 			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent, threadlocal );
 		}
-#if 0
-		InfoKruncher::ThreadLocalBase* AllocateThreadLocal( const InfoKruncher::SocketProcessOptions& options )
-		{
-			return InfoSite::AllocateThreadLocal( options );
-		}
-#endif
 	};
 	template<> 
 		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )

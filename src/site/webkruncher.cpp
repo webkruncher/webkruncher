@@ -88,7 +88,7 @@ namespace WebKruncherService
 		const int AuthorizationStatus( auth );
 		const string& txt( auth );
 		Responder( AuthorizationStatus, Payload.contenttype, ServiceName, records.IsNewCookie(), records.CookieName(), records.Cookie(), txt );
-		if ( txt.size() > 4096 ) Responder.SetChunked( 4096 );
+		//if ( txt.size() > 4096 ) Responder.SetChunked( 4096 );
 		return ;
 	}
 
@@ -114,8 +114,16 @@ namespace WebKruncherService
 	void InfoSite::Throttle( const InfoKruncher::SocketProcessOptions& svcoptions )
 		{ usleep( 100000 ); }
 
-        struct TL {};
-        struct ThreadLocal : InfoKruncher::ThreadLocalStorage< TL > {};
+        struct ThreadLocal : InfoKruncher::ThreadLocalBase
+	{
+		private:
+                virtual ostream& operator<<( ostream& o ) const
+                {
+                        //o << fence << getpid() << fence << pthread_self() << fence << times << fence << endl;
+                        return o;
+                }
+
+	};
 
 
 	InfoKruncher::ThreadLocalBase* InfoSite::AllocateThreadLocal( const InfoKruncher::SocketProcessOptions& options )
