@@ -118,7 +118,7 @@ namespace WebKruncherService
         struct ThreadLocal : InfoKruncher::ThreadLocalStorage< TL > {};
 
 
-	InfoKruncher::ThreadLocalBase* InfoSite::AllocateThreadLocal()
+	InfoKruncher::ThreadLocalBase* InfoSite::AllocateThreadLocal( const InfoKruncher::SocketProcessOptions& options )
 	{
 		//cerr << "T"; cerr.flush();
 		return new ThreadLocal();

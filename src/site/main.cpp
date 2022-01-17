@@ -50,9 +50,9 @@ namespace InfoKruncher
 			InfoSite::PostProcessing( responder, DefaultResponse, PostedContent, threadlocal );
 		}
 #if 0
-		InfoKruncher::ThreadLocalBase* AllocateThreadLocal()
+		InfoKruncher::ThreadLocalBase* AllocateThreadLocal( const InfoKruncher::SocketProcessOptions& options )
 		{
-			return InfoSite::AllocateThreadLocal();
+			return InfoSite::AllocateThreadLocal( options );
 		}
 #endif
 	};
