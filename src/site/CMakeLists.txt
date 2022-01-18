@@ -11,7 +11,6 @@ Headers(
 	infodata
 	infodata::db
 	infodata::db/auth
-	infodata::db/records
 	infodata::db/site
 )
 
@@ -24,7 +23,6 @@ LibraryPaths(
 	datakruncher::data/
 	informationkruncher::socks/
 	infodata::db/auth/
-	infodata::db/records/
 	infodata::db/site/
 )
 
@@ -36,7 +34,6 @@ Libraries(
 	datakruncher
 	informationkruncher
 	auth
-	records
 	site
 )
 
