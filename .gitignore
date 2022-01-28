@@ -8,3 +8,4 @@ Makefile
 journal.txt
 progress.txt
 *.*.swp
+*.core
