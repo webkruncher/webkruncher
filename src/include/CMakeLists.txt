@@ -8,7 +8,7 @@ install(
     FILES
 	    ${includes}    
 		    OPTIONAL
-		    DESTINATION include/webkruncher
+                    DESTINATION include/infokruncher
 )
 
 add_library(
