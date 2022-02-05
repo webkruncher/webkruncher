@@ -43,7 +43,8 @@ namespace WebKruncherService
 	{
 		if ( r.resource.size() > 512 ) return;
 		const string ipaddr( dotted( r.ipaddr ) );
-		cerr << ipaddr << endl;
+		//cerr << ipaddr << endl;
+		//cerr << green << r.options << normal << endl;
 
 		const string schemer( ( r.options.scheme == InfoKruncher::http ) ? "http" : "https" );
 		Log( VERB_ALWAYS, "InfoSite::LoadResponse", ipaddr + string( "|" ) + r.method + string( "|" ) + schemer + string("|") + r.resource );

@@ -37,6 +37,30 @@
 
 namespace InfoKruncher
 {
+	struct SiteOptions : InfoKruncher::SocketProcessOptions
+	{
+		SiteOptions() : SocketProcessOptions(), purpose( "worker" ) {}
+		virtual void operator()( const string name, const string  value )
+		{
+			SocketProcessOptions::operator()( name, value );
+			if ( name == "purpose" ) purpose=value;
+		}
+		string purpose;
+		private:
+		virtual ostream& operator<<(ostream& o) const
+		{
+			SocketProcessOptions::operator<<( o );
+			if ( ! purpose.empty() ) o << "purpose:" << purpose << endl;
+			return o;
+		}
+	};
+
+	struct SiteServiceList : InfoKruncher::ServiceList
+	{
+		virtual InfoKruncher::SocketProcessOptions* NewOptions()
+			{ return new SiteOptions ; }
+	};
+
 	struct DbSite : InfoSite
 	{
 		bool ProcessForm( const string formpath, stringmap& formdata )
@@ -53,6 +77,7 @@ namespace InfoKruncher
 	template<> 
 		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )
 	{
+		cerr << "Serving:" << endl << svcoptions << endl;
 		RunService( svcoptions );
 	}
 	template<> void InfoKruncher::Service< WebKruncherService::InfoSite >::Terminate() { subprocesses.Terminate(); }
@@ -66,11 +91,11 @@ int main( int argc, char** argv )
 	stringstream ssexcept;
 	try
 	{
-		InfoKruncher::Options< InfoKruncher::ServiceList > options( argc, argv );
+		InfoKruncher::Options< InfoKruncher::SiteServiceList > options( argc, argv );
 		if ( ! options ) throw string( "Invalid options" );
 		if ( options.find( "-d" ) == options.end() ) Initialize();
 
-		const InfoKruncher::ServiceList& workerlist( options.workerlist );
+		const InfoKruncher::SiteServiceList& workerlist( options.workerlist );
 
 		const size_t nSites( options.workerlist.size() );
 
