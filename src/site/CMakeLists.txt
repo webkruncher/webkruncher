@@ -22,9 +22,7 @@ LibraryPaths(
 	krunchercore::ut/
 	datakruncher::data/
 	informationkruncher::socks/
-	infodata::db/auth/
-	infodata::db/site/
-			datakruncher::data/
+	datakruncher::data/
 )
 
 
@@ -33,8 +31,6 @@ Libraries(
 	krunchercore
 	datafactory
 	informationkruncher
-	auth
-	site
 )
 
 
