@@ -75,7 +75,7 @@ namespace InfoKruncher
 		}
 	};
 	template<> 
-		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( const SocketProcessOptions& svcoptions )
+		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( PROPERTIES_BASE& node, const SocketProcessOptions& svcoptions )
 	{
 		cerr << "Serving:" << endl << svcoptions << endl;
 		RunService( svcoptions );
@@ -93,6 +93,7 @@ int main( int argc, char** argv )
 	{
 		InfoKruncher::Options< InfoKruncher::SiteServiceList > options( argc, argv );
 		if ( ! options ) throw string( "Invalid options" );
+		PROPERTIES_BASE& Cfg( options );
 		if ( options.find( "-d" ) == options.end() ) Initialize();
 
 		const InfoKruncher::SiteServiceList& workerlist( options.workerlist );
@@ -114,7 +115,7 @@ int main( int argc, char** argv )
 		{
 			InfoKruncher::Service<WebKruncherService::InfoSite>& site( sites[ c ] );
 			const InfoKruncher::SocketProcessOptions& svcoptions( *workerlist[ c ] );
-			site.ForkAndServe( svcoptions);
+			site.ForkAndServe( Cfg, svcoptions);
 		}
 		while ( !TERMINATE ) sleep( 1 );
 		Log( "webkruncher is exiting" );
