@@ -78,7 +78,7 @@ namespace InfoKruncher
 		void InfoKruncher::Service< WebKruncherService::InfoSite >::ForkAndServe( PROPERTIES_BASE& node, const SocketProcessOptions& svcoptions )
 	{
 		cerr << "Serving:" << endl << svcoptions << endl;
-		RunService( svcoptions );
+		RunService( node, svcoptions );
 	}
 	template<> void InfoKruncher::Service< WebKruncherService::InfoSite >::Terminate() { subprocesses.Terminate(); }
 } // InfoKruncher
