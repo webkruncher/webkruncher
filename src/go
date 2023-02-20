@@ -75,10 +75,7 @@ if [ "${1}" == "-run" ]; then
 	sleep 2
 	sudo pkill webkruncher
 	sleep 2
-	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter jackmthompson.ninja
-#sudo KRUNCHER_JOURNAL=${KRUNCHER_JOURNAL} -s <<'EOF'
-#	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/webkruncher.xml  --node site --filter jackmthompson.ninja
-#EOF
+	sudo ../src.build/site/webkruncher ${1} --xml /home/jmt/websites/sites/contractkruncher.xml  --node site --filter contractkruncher
 fi
 
 if [ "${1}" == "-install" ]; then 
